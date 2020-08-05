@@ -2,11 +2,12 @@ package com.dns.resttestbuilder.data;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
@@ -20,20 +21,20 @@ import lombok.NoArgsConstructor;
 public class Workspace {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue
 	Long id;
 
 	String name;
-	
-	
-	Long selectProjectID;
 
-	@OneToMany(fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
+//	@JoinColumn(name = "id")
 	List<Project> projects;
 
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+//	@JoinColumn(name = "id")
 	List<MappedValue> environments;
 
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+//	@JoinColumn(name = "id")
 	List<MappedValue> globalVars;
 }

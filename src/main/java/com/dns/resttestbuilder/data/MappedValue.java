@@ -3,8 +3,6 @@ package com.dns.resttestbuilder.data;
 import java.util.HashMap;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
@@ -24,9 +22,6 @@ public class MappedValue {
 	Long id;
 	
 	String name;
-	
-	@Enumerated(EnumType.STRING)
-	MapKind mapKind;
 	
 	HashMap<String, String> keyVsValue;
 }

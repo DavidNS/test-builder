@@ -31,6 +31,7 @@ public class RestTestApplication extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// Java FX view
+		System.out.println(context.getApplicationName() +" "+context.getDisplayName());
 		MainController mainController=context.getBean(MainController.class);
 		mainController.setMainStage(primaryStage);
 		WindowBuilder wb = context.getBean(WindowBuilder.class);

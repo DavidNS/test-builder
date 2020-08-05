@@ -1,27 +1,22 @@
 package com.dns.resttestbuilder.configuration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.function.BiFunction;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.dns.resttestbuilder.data.Endpoint;
+import com.dns.resttestbuilder.data.JSONModel;
+import com.dns.resttestbuilder.data.MappedValue;
 import com.dns.resttestbuilder.data.Project;
+import com.dns.resttestbuilder.data.Test;
 import com.dns.resttestbuilder.data.User;
 import com.dns.resttestbuilder.data.Workspace;
-import com.dns.resttestbuilder.repository.ProjectRepository;
-import com.dns.resttestbuilder.repository.WorkspaceRepository;
 
 @Component
 public class DefaultData {
-
-	@Autowired
-	ProjectRepository projectRepository;
-	
-
-	
-	@Autowired
-	WorkspaceRepository workspaceRepository;
 	
 
 	private static final String DEFAULT = "Default";
@@ -43,7 +38,11 @@ public class DefaultData {
 	
 	public Workspace getWorkspace() {
 		Workspace workspace=new Workspace();
+		List<MappedValue> environments=new ArrayList<>();
+		List<MappedValue> globalVars=new ArrayList<>();
 		workspace.setName(DEFAULT);
+		workspace.setEnvironments(environments);
+		workspace.setGlobalVars(globalVars);
 		return workspace;
 	}
 
@@ -51,32 +50,57 @@ public class DefaultData {
 	public Project getProject() {
 		Project project=new Project();
 		project.setName(DEFAULT);
+		List<Test> tests=new ArrayList<>();
+		List<Endpoint> endpoints=new ArrayList<>();
+		List<JSONModel> jsonModels=new ArrayList<>();
+		project.setEndpoints(endpoints);
+		project.setJsonModels(jsonModels);
+		project.setTests(tests);
 		return project;
 	}
 
 	
-	public User getUser(String name ) {
+	public User getUser(String name, Project project,Workspace workspace) {
 		User user=new User();
+		List<Project> projects=new ArrayList<>();
+		List<Workspace> workspaces=new ArrayList<>();
+		MappedValue userPreferences = getUserPreferences();
 		user.setName(name);
-
+		user.setUserPreferences(userPreferences);
+		user.setWorkspaces(workspaces);
+		workspace.setProjects(projects);
+		projects.add(project);
+		workspaces.add(workspace);
 		return user;
 	}
 
 
-
-	public Workspace save(Workspace workspace,List<Workspace> workspaces, User user) {
-		workspace=workspaceRepository.save(workspace);
-		user.setSelectWorkspaceID(workspace.getId());
-		user.setWorkspaces(workspaces);
-		return workspace;
+	private MappedValue getUserPreferences() {
+		MappedValue userPreferences=new MappedValue();
+		userPreferences.setName(DEFAULT);
+		userPreferences.setKeyVsValue(new HashMap<>());
+		return userPreferences;
 	}
-
-
-	public Project save(Project project,List<Project> projects, Workspace workspace) {
-		project=projectRepository.save(project);
-		workspace.setSelectProjectID(project.getId());
-		workspace.setProjects(projects);
-		return project;
+	
+	public void saveUserPreference(User user, String preferenceName, Object stringParseableValue) {
+		MappedValue userPref=user.getUserPreferences();
+		userPref.getKeyVsValue().put(preferenceName, String.valueOf(stringParseableValue));
+	}
+	
+	public String getUserPreference(User user, String preferenceName) {
+		MappedValue userPref=user.getUserPreferences();
+		return userPref.getKeyVsValue().get(preferenceName);
+	}
+	
+	public <C> C getSelected(List<C> searchingList, Long itemID, BiFunction<C, Long, Boolean> selectionFunction) {
+		C searchingItem = null;
+		for (int i = 0; i < searchingList.size() && searchingItem == null; i++) {
+			C listItem = searchingList.get(i);
+			if (selectionFunction.apply(listItem, itemID)) {
+				searchingItem = listItem;
+			}
+		}
+		return searchingItem;
 	}
 	
 }

@@ -6,6 +6,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 import lombok.AllArgsConstructor;
@@ -30,9 +31,11 @@ public class Endpoint {
 	Method method;
 	
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+//	@JoinColumn(name = "ID")
 	JSONModel inModel;
 	
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+//	@JoinColumn(name = "fk_jsonmodel")
 	JSONModel outModel;
 	
 	

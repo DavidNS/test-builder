@@ -3,10 +3,12 @@ package com.dns.resttestbuilder.data;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -32,11 +34,13 @@ public class Step {
 	
 	Long stepOrder;
 	
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+//	@JoinColumn(name = "ID")
 	List<JSONModel> jsonInputs;
 
 	HashMap<String, String> userFXMLChoices;
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+//	@JoinColumn(name = "ID")
 	JSONModel jsonExpectedOutput;
 }

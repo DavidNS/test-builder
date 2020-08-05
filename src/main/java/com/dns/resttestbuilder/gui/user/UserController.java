@@ -1,6 +1,5 @@
 package com.dns.resttestbuilder.gui.user;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,13 +7,12 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.dns.resttestbuilder.configuration.DefaultData;
+import com.dns.resttestbuilder.configuration.UserPreferencesNames;
 import com.dns.resttestbuilder.data.Project;
 import com.dns.resttestbuilder.data.User;
 import com.dns.resttestbuilder.data.Workspace;
 import com.dns.resttestbuilder.gui.MainController;
-import com.dns.resttestbuilder.repository.ProjectRepository;
 import com.dns.resttestbuilder.repository.UserRepository;
-import com.dns.resttestbuilder.repository.WorkspaceRepository;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -27,18 +25,12 @@ import lombok.extern.slf4j.Slf4j;
 @Scope("singleton")
 @Slf4j
 public class UserController {
-
+	
 	@Autowired
 	DefaultData defaultData;
 
 	@Autowired
 	MainController mainController;
-
-	@Autowired
-	ProjectRepository projectRepository;
-	
-	@Autowired
-	WorkspaceRepository workspaceRepository;
 	
 	@Autowired
 	UserRepository userRepository;
@@ -72,20 +64,14 @@ public class UserController {
 	private User createBaseUser(String name) {
 		Project project=defaultData.getProject();
 		Workspace workspace=defaultData.getWorkspace();
-
+		User user =defaultData.getUser(name,project,workspace);
 		
-		ArrayList<Project> projects=defaultData.getProjects(project);
-		ArrayList<Workspace> workspaces=defaultData.getWorkspaces(workspace);
+		user= userRepository.save(user);
 		
-		User user =defaultData.getUser(name);
+		defaultData.saveUserPreference(user, UserPreferencesNames.USER_PROJECT_ID, project.getId());
+		defaultData.saveUserPreference(user, UserPreferencesNames.USER_WORKSPACE_ID, workspace.getId());
 		
-		defaultData.save(project, projects, workspace);
-		defaultData.save(workspace, workspaces, user);
-
 		return userRepository.save(user);
 	}
-
-
 	
-
 }

@@ -15,10 +15,12 @@ import org.springframework.stereotype.Component;
 import com.dns.resttestbuilder.gui.WindowBuilder;
 import com.dns.resttestbuilder.gui.workspace.WorkspaceController;
 
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.StringConverter;
@@ -87,18 +89,20 @@ public class WorkspaceChoiceBox<T> {
 	}
 
 	private void initChoiceBox() {
-		choiceBox.getSelectionModel().selectedIndexProperty().addListener((obs, oldVal, newVal) -> {
-			if (newVal.intValue() != -1 && oldVal.intValue() != -1) {
-				oldValue = choiceBox.getItems().get(oldVal.intValue()); // Save the previous item for the case restore
-				T t = choiceBox.getItems().get(newVal.intValue());
-				if (NEW.equals(getStringFunction.apply(t))) {
-					prepareNewStatus();
-					writeTextField.setText(NEW);
-				} else {
-					seletectFunction.accept(t);
-				}
+		choiceBox.getSelectionModel().selectedIndexProperty().addListener(this::changeListener);
+	}
+
+	private void changeListener(ObservableValue<? extends Number> obs, Number oldVal, Number newVal) {
+		if (newVal.intValue() != -1 && oldVal.intValue() != -1) {
+			oldValue = choiceBox.getItems().get(oldVal.intValue()); // Save the previous item for the case restore
+			T t = choiceBox.getItems().get(newVal.intValue());
+			if (NEW.equals(getStringFunction.apply(t))) {
+				prepareNewStatus();
+				writeTextField.setText(NEW);
+			} else {
+				seletectFunction.accept(t);
 			}
-		});
+		}
 	}
 
 	private void initEditBack() {
@@ -139,20 +143,12 @@ public class WorkspaceChoiceBox<T> {
 
 	public T deleteSelectedItem() {
 		T deletedItem = choiceBox.getSelectionModel().getSelectedItem();
-		ObservableList<T> itemList = removeNewItem();
+		ObservableList<T> itemList = choiceBox.getItems();
 		itemList.remove(deletedItem);
 		choiceBox.getSelectionModel().selectFirst();
 		return choiceBox.getValue();
 	}
 
-	public ObservableList<T> removeNewItem() {
-		ObservableList<T> itemList = choiceBox.getItems();
-		itemList.removeIf((e) -> {
-			return NEW.equals(getStringFunction.apply(e));
-		});
-		return itemList;
-	}
-	
 	public void addNewItem(List<T> clonedItems) {
 		T newItem = newItemSupplier.get();
 		setStringFuntion.accept(newItem, NEW);
@@ -209,14 +205,17 @@ public class WorkspaceChoiceBox<T> {
 	public void updateStatus(T selectedItem, List<T> items) {
 		List<T> clonedItems = new ArrayList<>(items);
 		this.oldValue = getSelectedItemById(selectedItem, clonedItems);
-		choiceBox.getItems().clear();
+		SingleSelectionModel<T> selModel=choiceBox.getSelectionModel();
+		List<T> choiceBoxItems=choiceBox.getItems();
+		selModel.selectedIndexProperty().removeListener(this::changeListener);
+		choiceBoxItems.clear();
 		addNewItem(clonedItems);
-		choiceBox.getItems().addAll(clonedItems);
-		choiceBox.getSelectionModel().select(selectedItem);
+		choiceBoxItems.addAll(clonedItems);
+		selModel.select(selectedItem);
+		selModel.selectedIndexProperty().addListener(this::changeListener);
 		restoreStatus(selectedItem);
+		
 	}
-
-
 
 	private T getSelectedItemById(T selectedItem, List<T> items) {
 		for (T t : items) {
