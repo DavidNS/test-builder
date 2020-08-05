@@ -27,7 +27,7 @@ public class Test {
 	String name;
 	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//	@JoinColumn(name = "ID")
+//	@JoinColumn(name = "STEPS_ID")
 	List<Step> steps;
 
 }

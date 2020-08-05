@@ -211,7 +211,6 @@ public class WorkspaceChoiceBox<T> {
 		choiceBoxItems.clear();
 		addNewItem(clonedItems);
 		choiceBoxItems.addAll(clonedItems);
-		selModel.select(selectedItem);
 		selModel.selectedIndexProperty().addListener(this::changeListener);
 		restoreStatus(selectedItem);
 		

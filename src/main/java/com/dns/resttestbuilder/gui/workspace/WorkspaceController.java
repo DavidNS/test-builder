@@ -117,14 +117,14 @@ public class WorkspaceController {
 	private void initChoicePanels() {
 		Node n1 = wb.buildWindow(worskpaceChoice, WORKSPACE_CHOICE_BOX_FXML);
 		workspaceCBAnchor.getChildren().setAll(n1);
-		worskpaceChoice.initializeItem(Workspace::new, Workspace::getName, Workspace::setName, this::equalsWorkspace);
+		worskpaceChoice.initializeItem(defaultData::getWorkspace, Workspace::getName, Workspace::setName, this::equalsWorkspace);
 
 		worskpaceChoice.initializeModel(this::workspaceSelected, this::newWorkspace, this::editWorkspace,
 				this::deleteWorkspace);
 
 		Node n2 = wb.buildWindow(projectChoice, WORKSPACE_CHOICE_BOX_FXML);
 		projectCBAnchor.getChildren().setAll(n2);
-		projectChoice.initializeItem(Project::new, Project::getName, Project::setName, this::equalsProject);
+		projectChoice.initializeItem(defaultData::getProject, Project::getName, Project::setName, this::equalsProject);
 
 		projectChoice.initializeModel(this::projectSelected, this::newProject, this::editProject, this::deleteProject);
 	}
@@ -164,22 +164,28 @@ public class WorkspaceController {
 	}
 
 	public void projectSelected(Project selectedProject) {
-		Long selectedProjectID=selectedProject.getId();
-		Workspace selectedWorkspace = getSelectedWorkspace(user, user.getWorkspaces());
-		List<Project> projects = selectedWorkspace.getProjects();
-
-		defaultData.saveUserPreference(user, UserPreferencesNames.USER_PROJECT_ID, selectedProjectID);
+		defaultData.saveUserPreference(user, UserPreferencesNames.USER_PROJECT_ID, selectedProject.getId());
 		userRepository.save(user);
-		
-		projectChoice.updateStatus(selectedProject, projects);
 	}
 	
+	public void workspaceSelected(Workspace selectedWorkspace) {
+		List<Project> projects=selectedWorkspace.getProjects();
+		Project selProject=projects.get(0);
+		defaultData.saveUserPreference(user, UserPreferencesNames.USER_WORKSPACE_ID, selectedWorkspace.getId());
+		defaultData.saveUserPreference(user, UserPreferencesNames.USER_PROJECT_ID, selProject.getId());
+		userRepository.save(user);
+
+		projectChoice.updateStatus(selProject, projects);
+
+	}
+
 	private void newProject(Project newProject) {
 		Workspace selectedWorkspace = getSelectedWorkspace(user, user.getWorkspaces());
 		List<Project> projects = selectedWorkspace.getProjects();
 		projects.add(newProject);
 		
-		userRepository.save(user);
+		newProject=projectRepository.save(newProject);
+		user=userRepository.save(user);
 		
 		Long selectedProjectID=newProject.getId();
 		defaultData.saveUserPreference(user, UserPreferencesNames.USER_PROJECT_ID, selectedProjectID);
@@ -187,72 +193,49 @@ public class WorkspaceController {
 		projectChoice.updateStatus(newProject, selectedWorkspace.getProjects());
 	}
 
-	public void workspaceSelected(Workspace selectedWorkspace) {
-
-		List<Project> projects = selectedWorkspace.getProjects();
-		
-		
-//		Project selectedProject = getSelected(projects, selectedWorkspace.getSelectProjectID(), this::equalsProject);
-
-//		user.setSelectWorkspaceID(selectedWorkspace.getId());
-//		userRepository.save(user);
-//
-//		projectChoice.updateStatus(selectedProject, projects);
-	}
-
-
 
 	
-	private void newWorkspace(Workspace newWorkspace) {
-//		Project project = defaultData.getProject();
-//		List<Project> projects = defaultData.getProjects(project);
-//
-//		List<Workspace> workspaces = user.getWorkspaces();
-//
-//		defaultData.save(project, projects, newWorkspace);
-//		defaultData.save(newWorkspace, workspaces, user);
-//
-//		userRepository.save(user);
-//
-//		worskpaceChoice.updateStatus(newWorkspace, workspaces);
-//		projectChoice.updateStatus(project, projects);
+	
+	private void newWorkspace(Workspace newWorkspace) {		
+		user.getWorkspaces().add(newWorkspace);
+		
+		user=userRepository.save(user);
+		newDefaultStatus();
+	}
+
+	private void newDefaultStatus() {
+		List<Workspace> workspaces=user.getWorkspaces();
+		Workspace workspace=workspaces.get(workspaces.size()-1);
+		
+		List<Project> projects=workspace.getProjects();
+		Project project=projects.get(0);
+		
+		defaultData.saveUserPreference(user, UserPreferencesNames.USER_WORKSPACE_ID, workspace.getId());
+		defaultData.saveUserPreference(user, UserPreferencesNames.USER_PROJECT_ID, project.getId());
+		
+		user=userRepository.save(user);
+		
+		projectChoice.updateStatus(project, projects);
+		worskpaceChoice.updateStatus(workspace ,workspaces );
 	}
 
 
 	private void deleteWorkspace(Workspace deletedWorkspace) {
-		List<Workspace> workspaces = worskpaceChoice.getChoiceBox().getItems();
-//		List<Project> deletedProjects = deletedWorkspace.getProjects();
-//
-//		Workspace newSelectedWorkspace = worskpaceChoice.deleteSelectedItem();
-//		List<Project> newProjects = newSelectedWorkspace.getProjects();
-//
-//		user.setSelectWorkspaceID(newSelectedWorkspace.getId());
-//		user.setWorkspaces(workspaces);
-//
-//		Project selectedProject = getSelected(newProjects, newSelectedWorkspace.getSelectProjectID(),
-//				this::equalsProject);
-//
-//		userRepository.save(user);
-//		workspaceRepository.delete(deletedWorkspace);
-//		projectRepository.deleteAll(deletedProjects);
-//
-//		worskpaceChoice.updateStatus(newSelectedWorkspace, workspaces);
-//		projectChoice.updateStatus(selectedProject, newProjects);
+		user.getWorkspaces().removeIf((p)->{return p.getId().equals(deletedWorkspace.getId());});
+		userRepository.save(user);
+		newDefaultStatus();
 	}
 
 	private void deleteProject(Project deletedProject) {
-		Workspace workspace = worskpaceChoice.getChoiceBox().getValue();
-		List<Project> projects = projectChoice.getChoiceBox().getItems();
-
-//		Project newSelectedProject = projectChoice.deleteSelectedItem();
-//
-//		workspace.setSelectProjectID(newSelectedProject.getId());
-//		workspace.setProjects(projects);
-//
-//		workspaceRepository.save(workspace);
-//		projectRepository.delete(deletedProject);
-//
-//		projectChoice.updateStatus(newSelectedProject, workspace.getProjects());
+		List<Workspace> workspaces = user.getWorkspaces();
+		Workspace selectedWorkspace = getSelectedWorkspace(user, workspaces);
+		List<Project> projects = selectedWorkspace.getProjects();
+		projects.removeIf((p)->{return p.getId().equals(deletedProject.getId());});
+		Project selectedProject = projects.get(0);
+		
+		defaultData.saveUserPreference(user, UserPreferencesNames.USER_PROJECT_ID, selectedProject.getId());
+		user=userRepository.save(user);
+		projectChoice.updateStatus(selectedProject, projects);
 	}
 
 	private boolean equalsProject(Project p, Long l) {

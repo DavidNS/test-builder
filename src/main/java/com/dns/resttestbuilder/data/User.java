@@ -31,11 +31,11 @@ public class User {
 	String name;
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
-//	@JoinColumn(name = "ID")
+//	@JoinColumn(name = "USER_PREFERENCES_ID")
 	MappedValue userPreferences ;
 	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
-//	@JoinColumn(name = "ID")
+//	@JoinColumn(name = "WORKSPACES_ID")
 	List<Workspace> workspaces;
 	
 }

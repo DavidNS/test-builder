@@ -31,11 +31,11 @@ public class Endpoint {
 	Method method;
 	
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-//	@JoinColumn(name = "ID")
+//	@JoinColumn(name = "IN_MODEL_ID")
 	JSONModel inModel;
 	
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-//	@JoinColumn(name = "fk_jsonmodel")
+//	@JoinColumn(name = "OUT_MODEL_ID")
 	JSONModel outModel;
 	
 	

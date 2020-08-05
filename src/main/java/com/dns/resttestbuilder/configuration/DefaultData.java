@@ -35,15 +35,22 @@ public class DefaultData {
 		return workspaces;
 	}
 
-	
-	public Workspace getWorkspace() {
+	public Workspace getWorkspace(Project project) {
 		Workspace workspace=new Workspace();
+		List<Project> projects=new ArrayList<>();
 		List<MappedValue> environments=new ArrayList<>();
 		List<MappedValue> globalVars=new ArrayList<>();
+		projects.add(project);
 		workspace.setName(DEFAULT);
 		workspace.setEnvironments(environments);
 		workspace.setGlobalVars(globalVars);
+		workspace.setProjects(projects);
 		return workspace;
+	}
+	
+	
+	public Workspace getWorkspace() {
+		return getWorkspace(getProject());
 	}
 
 	
@@ -60,16 +67,14 @@ public class DefaultData {
 	}
 
 	
-	public User getUser(String name, Project project,Workspace workspace) {
+	public User getUser(String name, Project project) {
 		User user=new User();
-		List<Project> projects=new ArrayList<>();
+		Workspace workspace=getWorkspace(project);
 		List<Workspace> workspaces=new ArrayList<>();
 		MappedValue userPreferences = getUserPreferences();
 		user.setName(name);
 		user.setUserPreferences(userPreferences);
 		user.setWorkspaces(workspaces);
-		workspace.setProjects(projects);
-		projects.add(project);
 		workspaces.add(workspace);
 		return user;
 	}

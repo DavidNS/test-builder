@@ -27,14 +27,14 @@ public class Workspace {
 	String name;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
-//	@JoinColumn(name = "id")
+//	@JoinColumn(name = "PROJECTS_ID")
 	List<Project> projects;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//	@JoinColumn(name = "id")
+//	@JoinColumn(name = "ENVRONMENTS_ID")
 	List<MappedValue> environments;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//	@JoinColumn(name = "id")
+//	@JoinColumn(name = "GLOBAL_VARS_ID")
 	List<MappedValue> globalVars;
 }

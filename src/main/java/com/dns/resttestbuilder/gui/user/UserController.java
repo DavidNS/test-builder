@@ -63,8 +63,8 @@ public class UserController {
 
 	private User createBaseUser(String name) {
 		Project project=defaultData.getProject();
-		Workspace workspace=defaultData.getWorkspace();
-		User user =defaultData.getUser(name,project,workspace);
+		User user =defaultData.getUser(name,project);
+		Workspace workspace=user.getWorkspaces().get(0);
 		
 		user= userRepository.save(user);
 		

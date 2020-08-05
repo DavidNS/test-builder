@@ -35,12 +35,12 @@ public class Step {
 	Long stepOrder;
 	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//	@JoinColumn(name = "ID")
+//	@JoinColumn(name = "JSON_INPUTS_ID")
 	List<JSONModel> jsonInputs;
 
 	HashMap<String, String> userFXMLChoices;
 	
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-//	@JoinColumn(name = "ID")
+//	@JoinColumn(name = "JSON_EXPECTED_OUTPUT")
 	JSONModel jsonExpectedOutput;
 }
