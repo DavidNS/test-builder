@@ -1,0 +1,34 @@
+
+
+async-configuration:
+  user-input-pool-size: 2
+  user-input-max-queue: 2
+  keep-alive-user-input: 5
+  test-element-pool-size: 100
+  test-element-max-queue: 10000
+  keep-alive-time-test-element: 3000
+
+
+
+spring:
+  datasource:
+    # H2 database config for dev only purposes
+    # jdbc:h2:mem:testdb -> volatile | jdbc:h2:file:/data/folder -> persistent
+    # More info -> http://www.h2database.com/html/features.html#connection_modes
+    # url: jdbc:h2:mem:testdb
+    url: jdbc:h2:file:./data/folder
+    driver-class-name: org.h2.Driver
+    username: drunken
+    password: sailor
+    platform:  org.hibernate.dialect.H2Dialect 
+  h2:
+    console:
+      enabled: true
+      path: /application-database
+      settings:
+        trace: false
+        web-allow-others: false
+        
+  jpa:
+    hibernate:
+      ddl-auto: update

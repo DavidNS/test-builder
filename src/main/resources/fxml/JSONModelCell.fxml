@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.ListCell?>
+
+<fx:root type="javafx.scene.control.ListCell"
+	xmlns="http://javafx.com/javafx/11.0.1"
+	xmlns:fx="http://javafx.com/fxml/1">
+	<graphic>
+		<AnchorPane>
+			<children>
+				<TextField fx:id="jsonModelNameField" text="JSON Model Name"
+					AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+					AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+			</children>
+		</AnchorPane>
+	</graphic>
+</fx:root>
