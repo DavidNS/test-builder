@@ -28,9 +28,9 @@ public class User {
 	@Column(unique = true)
 	String name;
 	
-	Long selectProfileID;
+	Long selectWorkspaceID;
 	
 	@OneToMany(fetch = FetchType.EAGER)
-	List<Profile> profiles;
+	List<Workspace> workspaces;
 	
 }

@@ -8,12 +8,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.dns.resttestbuilder.configuration.DefaultData;
-import com.dns.resttestbuilder.data.Profile;
 import com.dns.resttestbuilder.data.Project;
 import com.dns.resttestbuilder.data.User;
 import com.dns.resttestbuilder.data.Workspace;
 import com.dns.resttestbuilder.gui.MainController;
-import com.dns.resttestbuilder.repository.ProfileRepository;
 import com.dns.resttestbuilder.repository.ProjectRepository;
 import com.dns.resttestbuilder.repository.UserRepository;
 import com.dns.resttestbuilder.repository.WorkspaceRepository;
@@ -38,9 +36,6 @@ public class UserController {
 
 	@Autowired
 	ProjectRepository projectRepository;
-	
-	@Autowired
-	ProfileRepository profileRepository;
 	
 	@Autowired
 	WorkspaceRepository workspaceRepository;
@@ -77,17 +72,15 @@ public class UserController {
 	private User createBaseUser(String name) {
 		Project project=defaultData.getProject();
 		Workspace workspace=defaultData.getWorkspace();
-		Profile profile=defaultData.getProfile();
+
 		
 		ArrayList<Project> projects=defaultData.getProjects(project);
 		ArrayList<Workspace> workspaces=defaultData.getWorkspaces(workspace);
-		ArrayList<Profile> profiles=defaultData.getProfiles(profile);
 		
 		User user =defaultData.getUser(name);
 		
 		defaultData.save(project, projects, workspace);
-		defaultData.save(workspace, workspaces, profile);
-		defaultData.save(profile, profiles, user);
+		defaultData.save(workspace, workspaces, user);
 
 		return userRepository.save(user);
 	}

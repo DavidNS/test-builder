@@ -2,9 +2,9 @@ package com.dns.resttestbuilder.gui.workspace.choiceBox;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -59,13 +59,13 @@ public class WorkspaceChoiceBox<T> {
 	@FXML
 	AnchorPane choiceBoxAnchor;
 
-	private Runnable seletectItemOnIdFuntion;
+	private Consumer<T> seletectFunction;
 
-	private Runnable saveItemOnIdFuntion;
+	private Consumer<T> saveFunction;
 
-	private Runnable editItemSeletedOnIdFuntion;
+	private Consumer<T> editFunction;
 
-	private Runnable deleteItemOnIdFuntion;
+	private Consumer<T> deleteFunction;
 
 	private BiFunction<T, T, Boolean> equalsFuntion;
 
@@ -94,8 +94,8 @@ public class WorkspaceChoiceBox<T> {
 				if (NEW.equals(getStringFunction.apply(t))) {
 					prepareNewStatus();
 					writeTextField.setText(NEW);
-				}else {
-					workspaceController.itemSelectedFromChoiceBox();
+				} else {
+					seletectFunction.accept(t);
 				}
 			}
 		});
@@ -108,7 +108,7 @@ public class WorkspaceChoiceBox<T> {
 			} else if (choiceBox.getItems().size() < 3) {
 				wb.createAlert();
 			} else {
-				workspaceController.deleteFromChoiceBox(choiceBox.getSelectionModel().getSelectedItem());
+				deleteFunction.accept(choiceBox.getSelectionModel().getSelectedItem());
 			}
 		});
 	}
@@ -122,10 +122,10 @@ public class WorkspaceChoiceBox<T> {
 				T item = choiceBox.getSelectionModel().getSelectedItem();
 				if (isNew(item)) {
 					setStringFuntion.accept(item, writeTextField.getText());
-					workspaceController.saveFromChoiceBox(item);
+					saveFunction.accept(item);
 				} else {
 					setStringFuntion.accept(item, writeTextField.getText());
-					workspaceController.editFromChoiceBox(item);
+					editFunction.accept(item);
 				}
 			} else {
 				prepareNewStatus();
@@ -139,22 +139,41 @@ public class WorkspaceChoiceBox<T> {
 
 	public T deleteSelectedItem() {
 		T deletedItem = choiceBox.getSelectionModel().getSelectedItem();
-		ObservableList<T> itemList=choiceBox.getItems();
+		ObservableList<T> itemList = removeNewItem();
+		itemList.remove(deletedItem);
+		choiceBox.getSelectionModel().selectFirst();
+		return choiceBox.getValue();
+	}
+
+	public ObservableList<T> removeNewItem() {
+		ObservableList<T> itemList = choiceBox.getItems();
 		itemList.removeIf((e) -> {
 			return NEW.equals(getStringFunction.apply(e));
 		});
-		itemList.remove(deletedItem);
-		choiceBox.getSelectionModel().selectFirst();
-		return deletedItem;
+		return itemList;
+	}
+	
+	public void addNewItem(List<T> clonedItems) {
+		T newItem = newItemSupplier.get();
+		setStringFuntion.accept(newItem, NEW);
+		clonedItems.add(newItem);
 	}
 
-	public void initializeChoiceBox(Supplier<T> newItemSupplier, Function<T, String> getStringFunction,
+	public void initializeItem(Supplier<T> newItemSupplier, Function<T, String> getStringFunction,
 			BiConsumer<T, String> setStringFuntion, BiFunction<T, T, Boolean> equalsFuntion) {
 		this.newItemSupplier = newItemSupplier;
 		this.setStringFuntion = setStringFuntion;
 		this.getStringFunction = getStringFunction;
 		this.equalsFuntion = equalsFuntion;
 		choiceBox.setConverter(createDefaultConverter(getStringFunction));
+	}
+
+	public void initializeModel(Consumer<T> seletectFunction, Consumer<T> saveFunction, Consumer<T> editFunction,
+			Consumer<T> deleteFunction) {
+		this.seletectFunction = seletectFunction;
+		this.saveFunction = saveFunction;
+		this.editFunction = editFunction;
+		this.deleteFunction = deleteFunction;
 	}
 
 	private StringConverter<T> createDefaultConverter(Function<T, String> getStringFunction) {
@@ -187,21 +206,17 @@ public class WorkspaceChoiceBox<T> {
 		choiceBoxAnchor.getChildren().setAll(choiceBox);
 	}
 
-	public void setDisabled() {
-
-	}
-
 	public void updateStatus(T selectedItem, List<T> items) {
-		List<T> clonedItems=new ArrayList<>(items);
+		List<T> clonedItems = new ArrayList<>(items);
 		this.oldValue = getSelectedItemById(selectedItem, clonedItems);
 		choiceBox.getItems().clear();
-		T newItem = newItemSupplier.get();
-		setStringFuntion.accept(newItem, NEW);
-		clonedItems.add(newItem);
+		addNewItem(clonedItems);
 		choiceBox.getItems().addAll(clonedItems);
 		choiceBox.getSelectionModel().select(selectedItem);
 		restoreStatus(selectedItem);
 	}
+
+
 
 	private T getSelectedItemById(T selectedItem, List<T> items) {
 		for (T t : items) {
