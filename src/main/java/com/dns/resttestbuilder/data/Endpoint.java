@@ -6,8 +6,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+
+import com.sun.istack.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,19 +24,19 @@ public class Endpoint {
 	@GeneratedValue
 	Long id;
 	
-	String shortName;
+	String alias;
 	
+	@NotNull
 	String url;
 	
 	@Enumerated(EnumType.STRING)
-	Method method;
+	@NotNull
+	String method;
 	
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-//	@JoinColumn(name = "IN_MODEL_ID")
 	JSONModel inModel;
 	
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-//	@JoinColumn(name = "OUT_MODEL_ID")
 	JSONModel outModel;
 	
 	

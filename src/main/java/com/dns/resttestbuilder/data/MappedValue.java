@@ -23,5 +23,5 @@ public class MappedValue {
 	
 	String name;
 	
-	HashMap<String, String> keyVsValue;
+	HashMap<String, String> keyVsValue=new HashMap<>();
 }

@@ -1,5 +1,6 @@
 package com.dns.resttestbuilder.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -7,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
@@ -27,14 +27,11 @@ public class Workspace {
 	String name;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
-//	@JoinColumn(name = "PROJECTS_ID")
-	List<Project> projects;
+	List<Project> projects = new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//	@JoinColumn(name = "ENVRONMENTS_ID")
-	List<MappedValue> environments;
+	List<MappedValue> environments = new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//	@JoinColumn(name = "GLOBAL_VARS_ID")
-	List<MappedValue> globalVars;
+	List<MappedValue> globalVars = new ArrayList<>();
 }

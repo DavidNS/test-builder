@@ -1,11 +1,10 @@
 package com.dns.resttestbuilder;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 import com.dns.resttestbuilder.configuration.AsyncConfiguration;
-
-import javafx.application.Application;
 
 
 /**
@@ -20,8 +19,9 @@ import javafx.application.Application;
 @EnableConfigurationProperties({AsyncConfiguration.class/*, OtherConf.class*/})
 public class RestTestBuilderBoot {
 
+
 	public static void main(String[] args) {
-		Application.launch(RestTestApplication.class, args);
+		SpringApplication.run(RestTestBuilderBoot.class, args);
 	}
 
 }

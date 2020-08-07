@@ -3,7 +3,6 @@ package com.dns.resttestbuilder.configuration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.BiFunction;
 
 import org.springframework.stereotype.Component;
 
@@ -85,27 +84,6 @@ public class DefaultData {
 		userPreferences.setName(DEFAULT);
 		userPreferences.setKeyVsValue(new HashMap<>());
 		return userPreferences;
-	}
-	
-	public void saveUserPreference(User user, String preferenceName, Object stringParseableValue) {
-		MappedValue userPref=user.getUserPreferences();
-		userPref.getKeyVsValue().put(preferenceName, String.valueOf(stringParseableValue));
-	}
-	
-	public String getUserPreference(User user, String preferenceName) {
-		MappedValue userPref=user.getUserPreferences();
-		return userPref.getKeyVsValue().get(preferenceName);
-	}
-	
-	public <C> C getSelected(List<C> searchingList, Long itemID, BiFunction<C, Long, Boolean> selectionFunction) {
-		C searchingItem = null;
-		for (int i = 0; i < searchingList.size() && searchingItem == null; i++) {
-			C listItem = searchingList.get(i);
-			if (selectionFunction.apply(listItem, itemID)) {
-				searchingItem = listItem;
-			}
-		}
-		return searchingItem;
 	}
 	
 }
