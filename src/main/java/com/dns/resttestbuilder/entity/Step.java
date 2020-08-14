@@ -1,14 +1,11 @@
-package com.dns.resttestbuilder.data;
+package com.dns.resttestbuilder.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
-
-import com.sun.istack.NotNull;
+import javax.persistence.Lob;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,26 +15,23 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Endpoint {
+public class Step {
+	
 	
 	@Id
 	@GeneratedValue
 	Long id;
 	
-	String alias;
+	Long userID;
 	
-	@NotNull
-	String url;
+	String name;
 	
 	@Enumerated(EnumType.STRING)
-	@NotNull
-	String method;
+	StepKind stepKind;
 	
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-	JSONModel inModel;
-	
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-	JSONModel outModel;
-	
-	
+	Long stepOrder;
+
+	@Lob
+	String stepModel;
+
 }

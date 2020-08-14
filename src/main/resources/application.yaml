@@ -1,12 +1,13 @@
 
 
 async-configuration:
-  user-input-pool-size: 2
-  user-input-max-queue: 2
-  keep-alive-user-input: 5
-  test-element-pool-size: 100
-  test-element-max-queue: 10000
-  keep-alive-time-test-element: 3000
+  test-element-pool-size: 2
+  test-element-max-queue: 2
+  keep-alive-time-test-element: 5
+  execution-stress-pool-size: 100
+  execution-stress-max-queue: 10000
+  keep-alive-execution-stress: 3000
+
 
 
 

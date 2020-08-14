@@ -1,4 +1,4 @@
-package com.dns.resttestbuilder.data;
+package com.dns.resttestbuilder.entity;
 
 import java.util.List;
 
@@ -6,7 +6,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
@@ -18,15 +17,23 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Test {
-	
+public class Project {
+
 	@Id
 	@GeneratedValue
 	Long id;
 	
+	Long userID;
+	
 	String name;
 	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	List<Step> steps;
-
+	List<Test> tests;
+	
+//	
+//	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+//	List<Step> steps;
+//	
+//	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+//	List<JSONModel> jsonModels;
 }

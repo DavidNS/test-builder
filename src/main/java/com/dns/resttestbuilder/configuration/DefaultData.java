@@ -1,89 +1,53 @@
 package com.dns.resttestbuilder.configuration;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.springframework.stereotype.Component;
 
-import com.dns.resttestbuilder.data.Endpoint;
-import com.dns.resttestbuilder.data.JSONModel;
-import com.dns.resttestbuilder.data.MappedValue;
-import com.dns.resttestbuilder.data.Project;
-import com.dns.resttestbuilder.data.Test;
-import com.dns.resttestbuilder.data.User;
-import com.dns.resttestbuilder.data.Workspace;
+import com.dns.resttestbuilder.entity.MappedValue;
+import com.dns.resttestbuilder.exception.InvalidUserIDException;
+import com.dns.resttestbuilder.exception.NotFoundException;
+import com.dns.resttestbuilder.exception.UserIDNotFoundException;
 
 @Component
 public class DefaultData {
-	
 
-	private static final String DEFAULT = "Default";
-
-	
-	public ArrayList<Project> getProjects(Project project) {
-		ArrayList<Project> projects=new ArrayList<>();
-		projects.add(project);
-		return projects;
+	public MappedValue handleMappedValue(Long userID, MappedValue mappedValue) {
+		handleCreatingObjectBeforeCreatingUser(userID);
+		handleNotValidUserID(MappedValue.class, mappedValue.getId(), mappedValue.getUserID(), userID);
+		handleNullProperty(mappedValue::getKeyVsValue, HashMap::new, mappedValue::setKeyVsValue);
+		return mappedValue;
 	}
 
-	
-	public ArrayList<Workspace> getWorkspaces(Workspace workspace) {
-		ArrayList<Workspace> workspaces=new ArrayList<>();
-		workspaces.add(workspace);
-		return workspaces;
+	public void handleCreatingObjectBeforeCreatingUser(Long userID) {
+		if (userID == null) {
+			throw new UserIDNotFoundException();
+		}
 	}
 
-	public Workspace getWorkspace(Project project) {
-		Workspace workspace=new Workspace();
-		List<Project> projects=new ArrayList<>();
-		List<MappedValue> environments=new ArrayList<>();
-		List<MappedValue> globalVars=new ArrayList<>();
-		projects.add(project);
-		workspace.setName(DEFAULT);
-		workspace.setEnvironments(environments);
-		workspace.setGlobalVars(globalVars);
-		workspace.setProjects(projects);
-		return workspace;
-	}
-	
-	
-	public Workspace getWorkspace() {
-		return getWorkspace(getProject());
+	public void handleNotValidUserID(Class<?> itemClass, Long itemID, Long previousUserID, Long currentUserID) {
+		if (itemID != null && previousUserID != null && !previousUserID.equals(currentUserID)) {
+			throw new InvalidUserIDException(itemClass, itemID);
+		}
 	}
 
-	
-	public Project getProject() {
-		Project project=new Project();
-		project.setName(DEFAULT);
-		List<Test> tests=new ArrayList<>();
-		List<Endpoint> endpoints=new ArrayList<>();
-		List<JSONModel> jsonModels=new ArrayList<>();
-		project.setEndpoints(endpoints);
-		project.setJsonModels(jsonModels);
-		project.setTests(tests);
-		return project;
+	public <T> void handleNotEqualsProperty(Class<T> classType, Supplier<T> previousProp, Supplier<T> newProp) {
+		if (!previousProp.get().equals(newProp.get())) {
+			// Throw notEqualsException
+		}
 	}
 
-	
-	public User getUser(String name, Project project) {
-		User user=new User();
-		Workspace workspace=getWorkspace(project);
-		List<Workspace> workspaces=new ArrayList<>();
-		MappedValue userPreferences = getUserPreferences();
-		user.setName(name);
-		user.setUserPreferences(userPreferences);
-		user.setWorkspaces(workspaces);
-		workspaces.add(workspace);
-		return user;
+	public <T> void handleNullProperty(Supplier<T> getProperty, Supplier<T> newProperty, Consumer<T> setProperty) {
+		T property = getProperty.get();
+		if (property == null) {
+			property = newProperty.get();
+			setProperty.accept(property);
+		}
 	}
 
-
-	private MappedValue getUserPreferences() {
-		MappedValue userPreferences=new MappedValue();
-		userPreferences.setName(DEFAULT);
-		userPreferences.setKeyVsValue(new HashMap<>());
-		return userPreferences;
+	public Supplier<? extends NotFoundException> getNotFoundSupplier(Class<?> classType, Long id) {
+		return () -> new NotFoundException(classType, id);
 	}
-	
 }

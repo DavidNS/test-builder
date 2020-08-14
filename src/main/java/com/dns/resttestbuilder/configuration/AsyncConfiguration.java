@@ -24,22 +24,22 @@ public class AsyncConfiguration {
 	
 	private long keepAliveTimeTestElement;
 	
-	private int userInputPoolSize;
+	private int executionStressPoolSize;
 	
-	private int userInputMaxQueue;
+	private int executionStressMaxQueue;
 	
-	private int keepAliveUserInput;
+	private int keepAliveExecutionStress;
 	
 
 	@Bean
 	@Scope("singleton")
-	public ThreadPoolExecutor getUserInputAsyncExecutor() {
-		return new ThreadPoolExecutor(userInputPoolSize, userInputMaxQueue, keepAliveUserInput, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(userInputMaxQueue));
+	public ThreadPoolExecutor getTestAsyncExecutor() {
+		return new ThreadPoolExecutor(executionStressPoolSize, executionStressMaxQueue, keepAliveExecutionStress, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(executionStressMaxQueue));
 	}
 	
 	@Bean
 	@Scope("singleton")
-	public ThreadPoolExecutor getTestElementExecutor() {
+	public ThreadPoolExecutor getStressAsyncExecutor() {
 		return new ThreadPoolExecutor(testElementPoolSize, testElementMaxQueue, keepAliveTimeTestElement, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(testElementMaxQueue));
 	}
 

@@ -1,4 +1,4 @@
-package com.dns.resttestbuilder.data;
+package com.dns.resttestbuilder.entity;
 
 public enum Method {
 

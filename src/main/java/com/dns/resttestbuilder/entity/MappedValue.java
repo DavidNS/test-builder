@@ -1,4 +1,4 @@
-package com.dns.resttestbuilder.data;
+package com.dns.resttestbuilder.entity;
 
 import java.util.HashMap;
 
@@ -21,7 +21,7 @@ public class MappedValue {
 	@GeneratedValue
 	Long id;
 	
-	String name;
+	Long userID;
 	
-	HashMap<String, String> keyVsValue=new HashMap<>();
+	HashMap<String, String> keyVsValue;
 }

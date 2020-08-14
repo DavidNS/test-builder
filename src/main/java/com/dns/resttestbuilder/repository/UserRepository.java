@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.dns.resttestbuilder.data.User;
+import com.dns.resttestbuilder.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long>{
 

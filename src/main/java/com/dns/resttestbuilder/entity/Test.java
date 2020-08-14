@@ -1,44 +1,37 @@
-package com.dns.resttestbuilder.data;
+package com.dns.resttestbuilder.entity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Step {
-	
+public class Test {
 	
 	@Id
 	@GeneratedValue
 	Long id;
 	
+	Long userID;
+	
 	String name;
 	
-	@Column(unique = true)
-	String fxmlName;
-	
-	Long stepOrder;
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	List<TestResult> testResult;
 	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	List<JSONModel> jsonInputs = new ArrayList<>();
-
-	HashMap<String, String> userFXMLChoices = new HashMap<>();
+	List<Step> steps;
 	
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-	JSONModel jsonExpectedOutput;
+	
 }

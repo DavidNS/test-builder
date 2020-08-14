@@ -1,6 +1,5 @@
-package com.dns.resttestbuilder.data;
+package com.dns.resttestbuilder.entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -23,15 +22,17 @@ public class Workspace {
 	@Id
 	@GeneratedValue
 	Long id;
+	
+	Long userID;
 
 	String name;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
-	List<Project> projects = new ArrayList<>();
+	List<Project> projects;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	List<MappedValue> environments = new ArrayList<>();
+	List<MappedValue> environments;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	List<MappedValue> globalVars = new ArrayList<>();
+	List<MappedValue> globalVars;
 }
