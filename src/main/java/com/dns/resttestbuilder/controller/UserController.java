@@ -35,7 +35,7 @@ public class UserController {
 	}
 
 
-	// TODO: This is the currently main mapping, because not security added yet ->
+	// TODO: This is the currently main mapping, because there is not security added yet ->
 	// Secure this app.
 	@PostMapping
 	User getOrReplaceFields(@RequestBody User user) {

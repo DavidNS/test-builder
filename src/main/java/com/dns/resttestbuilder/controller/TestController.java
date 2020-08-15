@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dns.resttestbuilder.configuration.DefaultData;
 import com.dns.resttestbuilder.entity.Project;
 import com.dns.resttestbuilder.entity.Test;
-import com.dns.resttestbuilder.entity.TestResult;
 import com.dns.resttestbuilder.repository.TestRepository;
 
 @RestController

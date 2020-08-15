@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,8 +16,8 @@ import com.dns.resttestbuilder.configuration.DefaultData;
 import com.dns.resttestbuilder.entity.Step;
 import com.dns.resttestbuilder.entity.Test;
 import com.dns.resttestbuilder.entity.TestResult;
-import com.dns.resttestbuilder.entity.embedded.Result;
-import com.dns.resttestbuilder.entity.stepModel.MainRequestStepModel;
+import com.dns.resttestbuilder.entity.embedded.MainRequestStepModel;
+import com.dns.resttestbuilder.entity.embedded.mainRequest.Result;
 import com.dns.resttestbuilder.model.TestExecution;
 import com.dns.resttestbuilder.repository.TestResultRepository;
 import com.google.gson.Gson;
@@ -36,6 +37,9 @@ public class TestExecutorController {
 
 	@Autowired
 	TestResultRepository resultRepository;
+	
+	@Autowired
+	ConfigurableApplicationContext context;
 
 	@GetMapping("/tests/{testID}/execute")
 	TestResult executeTest(@PathVariable Long userID, @PathVariable Long testID) {
@@ -84,7 +88,7 @@ public class TestExecutorController {
 
 	public void startAsyncTestExecution(Test testToExecute, TestResult tr) {
 		asyncConfiguration.getTestAsyncExecutor()
-				.execute(new TestExecution(this, testToExecute, tr, asyncConfiguration.getStressAsyncExecutor()));
+				.execute(new TestExecution(context, testToExecute, tr, asyncConfiguration.getStressAsyncExecutor()));
 	}
 
 	private MainRequestStepModel getMainRequestStepModel(List<Step> steps) {
@@ -93,7 +97,7 @@ public class TestExecutorController {
 
 	private void sortByOrderNumber(List<Step> steps) {
 		Collections.sort(steps, (one, two) -> {
-			return two.getStepOrder().intValue() - one.getStepOrder().intValue();
+			return one.getStepOrder().intValue()- two.getStepOrder().intValue();
 		});
 	}
 }

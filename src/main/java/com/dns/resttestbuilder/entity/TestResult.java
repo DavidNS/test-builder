@@ -9,8 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import com.dns.resttestbuilder.entity.embedded.Result;
-import com.dns.resttestbuilder.entity.stepModel.MainRequestStepModel;
+import com.dns.resttestbuilder.entity.embedded.MainRequestStepModel;
+import com.dns.resttestbuilder.entity.embedded.mainRequest.Result;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.dns.resttestbuilder.model;
+package com.dns.resttestbuilder.model.steps;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -6,8 +6,8 @@ import java.util.concurrent.TimeUnit;
 
 import com.dns.resttestbuilder.controller.TestExecutorController;
 import com.dns.resttestbuilder.entity.Method;
-import com.dns.resttestbuilder.entity.embedded.Result;
-import com.dns.resttestbuilder.entity.stepModel.MainRequestStepModel;
+import com.dns.resttestbuilder.entity.embedded.MainRequestStepModel;
+import com.dns.resttestbuilder.entity.embedded.mainRequest.Result;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.MediaType;
@@ -38,7 +38,6 @@ public class StressExecution implements Runnable {
 
 	@Override
 	public void run() {
-
 		result.setSendNumber(sendNumber);
 		result.setParallelNumber(parallelNumber);
 		String endpoint = result.getMainURL();
@@ -46,21 +45,23 @@ public class StressExecution implements Runnable {
 		String stringBody = result.getMainRequest();
 		String threadName = "StressExecutionExecution: " + sendNumber + " parallelOrder: " + parallelNumber;
 		Thread.currentThread().setName(threadName);
+		tryCall(endpoint, method, stringBody, threadName);
+		testExecutorController.updateTestResults(testResultID, result);
+	}
+
+	private void tryCall(String endpoint, String method, String stringBody, String threadName) {
 		try {
 			Call call = createCall(stringBody, endpoint, method);
 			result.setRequestDate(new Date());
 			Response response = call.execute();
 			result.setResponseDate(new Date());
 			updateResponseStatus(response.body().string(), true);
-			testExecutorController.updateTestResults(testResultID, result);
 		} catch (Exception e) {
 			result.setResponseDate(new Date());
 			updateResponseStatus("Not recived response from endpoint, Caused by: " + e.getLocalizedMessage(), false);
 			log.error("Error al ejecutar el hilo: {} endpoint: {} method: {} body: {}", threadName, endpoint, method,
 					stringBody, e);
-			testExecutorController.updateTestResults(testResultID, result);
 		}
-
 	}
 
 	private Call createCall(String stringBody, String endpoint, String method) {

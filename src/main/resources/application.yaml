@@ -1,16 +1,16 @@
-
-
+reserved-names:
+  array-identifier: "___ARRAY___"
+  key-identifier: "___KEY___"
+  input-identifier: "IN"
+  output-identifier: "OUT"
+  in-out-separator: "_"
 async-configuration:
-  test-element-pool-size: 2
-  test-element-max-queue: 2
-  keep-alive-time-test-element: 5
+  test-element-pool-size: 10
+  test-element-max-queue: 30
+  keep-alive-time-test-element: 1000
   execution-stress-pool-size: 100
   execution-stress-max-queue: 10000
   keep-alive-execution-stress: 3000
-
-
-
-
 spring:
   datasource:
     # H2 database config for dev only purposes
@@ -19,8 +19,8 @@ spring:
     # url: jdbc:h2:mem:testdb
     url: jdbc:h2:file:./data/folder
     driver-class-name: org.h2.Driver
-    username: drunken
-    password: sailor
+    username: drunkenSailor
+    password: 
     platform:  org.hibernate.dialect.H2Dialect 
   h2:
     console:
@@ -29,7 +29,6 @@ spring:
       settings:
         trace: false
         web-allow-others: false
-        
   jpa:
     hibernate:
       ddl-auto: update

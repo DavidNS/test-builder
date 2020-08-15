@@ -16,20 +16,6 @@ public class JSONTreeBuilder {
 	public static final String ARRAY_SEPARATTOR = "___ARRAY___";
 	public static final String KEY_SEPPARATTOR = "___KEY___";
 
-	/**
-	 * Genera los elementos necesarios siguiendo el mapeo:
-	 * <inputExample> { "key1":"value1", "key2":{ "key21":{ "key211":"value211" },
-	 * "key22":{ "key221":"value211" } }, "key4":[ { "sukeykey":"macacakey" },
-	 * "makey" ] } </inputExample>
-	 * 
-	 * <outputExample> key1=value1, key2:key21:key211=value211,
-	 * key2:key22:key221=value221, key4___ARRAY___0:sukeykey=macacakey,
-	 * key4___ARRAY___1=makey </outputExample>
-	 * 
-	 * TODO Hacer el javadoc legible
-	 * @param entry
-	 * @return
-	 */
 //	public JSONObject getPlaneKeyVsElement(String entry, List<PreRequestElement> preRequestScripts) {
 //		JSONObject validJSON = null;
 //		try {

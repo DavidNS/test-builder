@@ -4,15 +4,21 @@ import java.util.HashMap;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.dns.resttestbuilder.entity.MappedValue;
 import com.dns.resttestbuilder.exception.InvalidUserIDException;
 import com.dns.resttestbuilder.exception.NotFoundException;
 import com.dns.resttestbuilder.exception.UserIDNotFoundException;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 @Component
 public class DefaultData {
+	
+	@Autowired
+	ReservedNames reservedNames;
 
 	public MappedValue handleMappedValue(Long userID, MappedValue mappedValue) {
 		handleCreatingObjectBeforeCreatingUser(userID);
@@ -49,5 +55,25 @@ public class DefaultData {
 
 	public Supplier<? extends NotFoundException> getNotFoundSupplier(Class<?> classType, Long id) {
 		return () -> new NotFoundException(classType, id);
+	}
+	
+	public JsonObject getInputJson(HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON,
+			HashMap<Long, String> stepNumberVSOutJSON, String inJSON) {
+		JsonObject jsonObject = null;
+		if (inJSON.contains(reservedNames.getInputIdentifier())) {
+			String[] identifiers = inJSON.split(reservedNames.getInOutSeparator());
+			String stepID = identifiers[1];
+			String inID = identifiers[3];
+			jsonObject = JsonParser
+					.parseString(stepNumberVSInNumberVSInJSON.get(Long.parseLong(stepID)).get(Long.parseLong(inID)))
+					.getAsJsonObject();
+		} else if (inJSON.contains(reservedNames.getOutputIdentifier())) {
+			String[] identifiers = inJSON.split(reservedNames.getInOutSeparator());
+			String stepID = identifiers[1];
+			jsonObject = JsonParser.parseString(stepNumberVSOutJSON.get(Long.parseLong(stepID))).getAsJsonObject();
+		} else {
+			jsonObject = JsonParser.parseString(inJSON).getAsJsonObject();
+		}
+		return jsonObject;
 	}
 }

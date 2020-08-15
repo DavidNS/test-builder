@@ -1,9 +1,9 @@
-package com.dns.resttestbuilder.entity.stepModel;
+package com.dns.resttestbuilder.entity.embedded;
 
 import javax.persistence.Embeddable;
 
-import com.dns.resttestbuilder.entity.embedded.ExpectedPerformaceResults;
-import com.dns.resttestbuilder.entity.embedded.StressConditions;
+import com.dns.resttestbuilder.entity.embedded.mainRequest.ExpectedPerformaceResults;
+import com.dns.resttestbuilder.entity.embedded.mainRequest.StressConditions;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.dns.resttestbuilder.entity.embedded;
+package com.dns.resttestbuilder.entity.embedded.mainRequest;
 
 import javax.persistence.Embeddable;
 

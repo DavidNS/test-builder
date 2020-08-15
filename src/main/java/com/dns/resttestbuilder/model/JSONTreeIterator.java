@@ -6,10 +6,20 @@ import java.util.List;
 
 public class JSONTreeIterator {
 
-
 	public static final String ARRAY_SEPARATTOR = "___ARRAY___";
 	public static final String KEY_SEPPARATTOR = "___KEY___";
-	
+
+//	public JSONObject applyScripts(JSONObject rootModel, ObservableList<PreRequestElement> preRequestScriptList) {
+//	try {
+//		iterateOverPreRequestElement(rootModel, preRequestScriptList);
+//	} catch (Exception e) {
+//		e.printStackTrace();
+//	}
+//
+//	return rootModel;
+//
+//}
+
 	/**
 	 * Metodo para iterar sobre los campos de un json valido que se usara como
 	 * modelo a la hora de aplicar las funciones de prerequest
