@@ -17,8 +17,6 @@ public class Result {
 	Long sendNumber;
 	
 	Long parallelNumber;
-
-	String mainURL;
 	
 	String mainRequest;
 

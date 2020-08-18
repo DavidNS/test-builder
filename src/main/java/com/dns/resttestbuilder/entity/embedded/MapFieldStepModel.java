@@ -1,5 +1,6 @@
 package com.dns.resttestbuilder.entity.embedded;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.ElementCollection;
@@ -14,16 +15,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestStepModel {
+public class MapFieldStepModel {
 
-	String url;
+	List<String> inJson;
 	
-
 	@ElementCollection(fetch = FetchType.EAGER)
-	Map<String, String> urlParamKeyVSCombination;
-	
-	String method;
-	
-	String inJson;
-	
+	Map<String, String> outPlainKeyVsMapCombination;
 }

@@ -1,16 +1,20 @@
 reserved-names:
-  array-identifier: "___ARRAY___"
-  key-identifier: "___KEY___"
-  input-identifier: "IN"
+  array-identifier: "ARRAY_"
+  key-identifier: "KEY_"
+  step-identifier: "STEP_"
+  input-identifier: "IN_"
   output-identifier: "OUT"
-  in-out-separator: "_"
+  identifier-separator: ":"
+  map-combination-separator: "/AND/"
+  url-begin-param: "<"
+  url-end-param: ">"
 async-configuration:
   test-element-pool-size: 10
   test-element-max-queue: 30
-  keep-alive-time-test-element: 1000
+  keep-alive-time-test-element: 10
   execution-stress-pool-size: 100
   execution-stress-max-queue: 10000
-  keep-alive-execution-stress: 3000
+  keep-alive-execution-stress: 30
 spring:
   datasource:
     # H2 database config for dev only purposes

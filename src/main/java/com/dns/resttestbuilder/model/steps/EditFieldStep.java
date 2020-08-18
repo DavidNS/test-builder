@@ -16,6 +16,8 @@ import com.dns.resttestbuilder.configuration.ReservedNames;
 import com.dns.resttestbuilder.entity.Step;
 import com.dns.resttestbuilder.entity.embedded.EditFieldStepModel;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
@@ -47,15 +49,19 @@ public class EditFieldStep {
 			HashMap<Long, String> stepNumberVSOutJSON) {
 		Long stepNumber = step.getStepOrder();
 		EditFieldStepModel editFieldStepModel = new Gson().fromJson(step.getStepModel(), EditFieldStepModel.class);
+		
 		String inFromModel = editFieldStepModel.getInJson();
 		Map<String, String> plainKeyFieldsVSMethod = editFieldStepModel.getPlainKeyVsMehtod();
-		JsonObject inJSON = defaultData.getInputJson(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON, inFromModel);
-		JsonObject outJSON = defaultData.getInputJson(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON, inFromModel);
-		outJSON = applyScripts(outJSON, plainKeyFieldsVSMethod);
+		JsonElement inJSON = defaultData.getInputJsonElement(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON,
+				inFromModel);
 		HashMap<Long, String> inNumberVsINJson = new HashMap<>();
 		inNumberVsINJson.put(1L, inJSON.toString());
 		stepNumberVSInNumberVSInJSON.put(stepNumber, inNumberVsINJson);
-		stepNumberVSOutJSON.put(stepNumber, outJSON.toString());
+		
+		JsonElement outJSON = defaultData.getInputJsonElement(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON,
+				inFromModel);
+		String outJSONString = applyScripts(outJSON, plainKeyFieldsVSMethod);
+		stepNumberVSOutJSON.put(stepNumber, outJSONString);
 	}
 
 	/**
@@ -74,7 +80,7 @@ public class EditFieldStep {
 	 * @param valueModel no se usa
 	 * @return Nuevo DNI NNNNNNNNL
 	 */
-	public String getNewDNINumber(String plainKey, String valueModel) {
+	public String getNewDNINumber(String valueModel) {
 		String newDNINumber = String.valueOf(generateRandomIntIntRange(0, MAX_DNI_NUMBER));
 		return newDNINumber + calculateDNILetter(newDNINumber);
 	}
@@ -99,7 +105,7 @@ public class EditFieldStep {
 	 * @return PATRON_NUMEROS_PATRON_ULTIMONUMEROINCREMENTADO_PATRON o
 	 *         PATRONSINNUMERO_ANYADEUN1ALACADENA
 	 */
-	public String increaseControlNumber(String plainKey, String controlSequence) {
+	public String increaseControlNumber(String controlSequence) {
 //		String lastSequence = getLastStoredSecuence(plainKey, controlSequence);
 		String lastSequence = controlSequence;
 		Matcher matcher = PATTERN_GET_LAST_NUMBER_IN_SEQUENCE.matcher(lastSequence);
@@ -134,80 +140,71 @@ public class EditFieldStep {
 		return DNI_LETTERS.charAt(rest);
 	}
 
-	public JsonObject applyScripts(JsonObject rootModel, Map<String, String> plainKeyFieldsVSMethod) {
+	public String applyScripts(JsonElement rootModel, Map<String, String> plainKeyFieldsVSMethod) {
 		try {
-			iterateOverPreRequestElement(rootModel, plainKeyFieldsVSMethod);
+			iterateOverElements(rootModel, plainKeyFieldsVSMethod);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		return rootModel;
+		return rootModel.toString();
 	}
 
-	/**
-	 * Metodo para iterar sobre los campos de un json valido que se usara como
-	 * modelo a la hora de aplicar las funciones de prerequest
-	 * 
-	 * @param rootModel            JsonValido
-	 * @param preRequestScriptList Lista generica con los campos a iterar
-	 * @throws NoSuchMethodException     TODO
-	 * @throws IllegalAccessException    TODO
-	 * @throws InvocationTargetException TODO
-	 */
-	private void iterateOverPreRequestElement(JsonObject rootModel, Map<String, String> plainKeyFieldsVSMethod)
+	private void iterateOverElements(JsonElement rootModel, Map<String, String> plainKeyFieldsVSMethod)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		for (var plainKeyVsMethod : plainKeyFieldsVSMethod.entrySet()) {
+			JsonElement children=rootModel;
 			String plainKeyField = plainKeyVsMethod.getKey();
 			String methodName = plainKeyVsMethod.getValue();
-			JsonObject children = rootModel;
-			String[] elements = plainKeyField.split(reservedNames.getKeyIdentifier());
-
-			children = iterateOverElements(methodName, children, plainKeyField, elements);
+			String[] idElements = plainKeyField.split(reservedNames.getIdentifierSeparator());
+			iterateOverElements(idElements, methodName, children);
 		}
 	}
-
-	private JsonObject iterateOverElements(String methodName, JsonObject children, String plainKeyField,
-			String[] elements) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-		for (int i = 1; i < elements.length; i++) {
-			String key = elements[i];
-			String[] arrayElements = key.split(reservedNames.getArrayIdentifier());
-			if (isAnArray(arrayElements)) {
-				String arrayName = arrayElements[0];
-				int arrayIndex = Integer.parseInt(arrayElements[1]);
-				if (isOtherItem(elements, i)) {
-					// Case nested json inside array
-					children = children.getAsJsonArray(arrayName).get(arrayIndex).getAsJsonObject();
-				} else {
-					// Case last item but array
-					String modelValue = children.getAsJsonArray(arrayName).get(arrayIndex).getAsString();
-					String modelValueAfterScript = executeSelectedMethod(methodName, plainKeyField, modelValue);
-					children.getAsJsonArray(arrayName).set(arrayIndex, new JsonPrimitive(modelValueAfterScript));
-				}
-			} else if (isOtherItem(elements, i)) {
-				// Case nested json
-				children = children.get(key).getAsJsonObject();
+	
+	private void iterateOverElements(String[] idElements, String methodName, JsonElement children) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		for (int i = 0; i < idElements.length; i++) {
+			String idElement = idElements[i];
+			if (defaultData.isOtherItem(idElements, i)) {
+				children = defaultData.getNextChildren(children, idElement);
 			} else {
-				// Case last item
-				String modelValue = children.get(key).getAsString();
-				String modelValueAfterScript = executeSelectedMethod(methodName, plainKeyField, modelValue);
-				children.addProperty(key, modelValueAfterScript);
+				updateValue(methodName, children, idElement);
 			}
-
 		}
-		return children;
 	}
 
-	private boolean isOtherItem(String[] elements, int i) {
-		return i != elements.length - 1;
+	private void updateValue(String methodName, JsonElement children, String idElement) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		if (children.isJsonObject()) {
+			String keyName = idElement.split(reservedNames.getKeyIdentifier())[1];
+			updateValueJson(methodName, children, keyName);
+		} else {
+			String arrayIndex = idElement.split(reservedNames.getArrayIdentifier())[1];
+			updateValueJsonAray(methodName, children, arrayIndex);
+		}
 	}
 
-	private boolean isAnArray(String[] arrayElements) {
-		return arrayElements.length == 2;
-	}
 
-	private String executeSelectedMethod(String methodName, String plainKeyField, String modelValue)
+	public void updateValueJsonAray(String methodName, JsonElement children, String arrayIndex)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-		Method mt = getClass().getDeclaredMethod(methodName, plainKeyField.getClass(), modelValue.getClass());
-		return (String) mt.invoke(this, plainKeyField, modelValue);
+		Integer idx = Integer.parseInt(arrayIndex);
+		JsonArray chArr = children.getAsJsonArray();
+		String initialValue = chArr.get(idx).getAsString();
+		String updatedValue = initialValue;
+		updatedValue = executeSelectedMethod(methodName, initialValue);
+		chArr.set(idx, new JsonPrimitive(updatedValue));
+	}
+
+	public void updateValueJson(String methodName, JsonElement children, String key)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		JsonObject chJs = children.getAsJsonObject();
+		String initialValue = chJs.get(key).getAsString();
+		String updatedValue = initialValue;
+		updatedValue = executeSelectedMethod(methodName, initialValue);
+		chJs.add(key, new JsonPrimitive(updatedValue));
+	}
+
+	private String executeSelectedMethod(String methodName, String modelValue)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+		Method mt = getClass().getDeclaredMethod(methodName, String.class);
+		return (String) mt.invoke(this, modelValue);
 	}
 }

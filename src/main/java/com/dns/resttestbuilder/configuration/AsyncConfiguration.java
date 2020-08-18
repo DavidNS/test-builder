@@ -34,13 +34,13 @@ public class AsyncConfiguration {
 	@Bean
 	@Scope("singleton")
 	public ThreadPoolExecutor getTestAsyncExecutor() {
-		return new ThreadPoolExecutor(executionStressPoolSize, executionStressMaxQueue, keepAliveExecutionStress, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(executionStressMaxQueue));
+		return new ThreadPoolExecutor(testElementPoolSize, testElementMaxQueue, keepAliveTimeTestElement,  TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(testElementMaxQueue));
 	}
 	
 	@Bean
 	@Scope("singleton")
 	public ThreadPoolExecutor getStressAsyncExecutor() {
-		return new ThreadPoolExecutor(testElementPoolSize, testElementMaxQueue, keepAliveTimeTestElement, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(testElementMaxQueue));
+		return new ThreadPoolExecutor(executionStressPoolSize, executionStressMaxQueue, keepAliveExecutionStress, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(executionStressMaxQueue));
 	}
 
 

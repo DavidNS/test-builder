@@ -16,9 +16,17 @@ public class ReservedNames {
 	
 	private String keyIdentifier;
 	
+	private String stepIdentifier;
+	
 	private String inputIdentifier;
 	
 	private String outputIdentifier;
 	
-	private String inOutSeparator;
+	private String identifierSeparator;
+
+	private String mapCombinationSeparator;
+	
+	private String urlBeginParam;
+
+	private String urlEndParam;
 }

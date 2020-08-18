@@ -1,14 +1,11 @@
 package com.dns.resttestbuilder.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import org.springframework.context.ConfigurableApplicationContext;
 
-import com.dns.resttestbuilder.configuration.DefaultData;
-import com.dns.resttestbuilder.controller.TestExecutorController;
 import com.dns.resttestbuilder.entity.Step;
 import com.dns.resttestbuilder.entity.StepKind;
 import com.dns.resttestbuilder.entity.Test;
@@ -17,7 +14,7 @@ import com.dns.resttestbuilder.entity.embedded.MainRequestStepModel;
 import com.dns.resttestbuilder.entity.embedded.mainRequest.Result;
 import com.dns.resttestbuilder.entity.embedded.mainRequest.StressConditions;
 import com.dns.resttestbuilder.model.steps.EditFieldStep;
-import com.dns.resttestbuilder.model.steps.MergeFieldsStep;
+import com.dns.resttestbuilder.model.steps.MapFieldsStep;
 import com.dns.resttestbuilder.model.steps.SendRequestStep;
 import com.dns.resttestbuilder.model.steps.StressExecution;
 
@@ -53,37 +50,38 @@ public class TestExecution implements Runnable {
 		buildMap();
 		List<Step> steps = t.getSteps();
 		MainRequestStepModel mainRequestStepModel = tr.getMainRequestStepModel();
-		List<Result> mainRequests = generateMainRequest(steps, mainRequestStepModel);
-		executeStessTest(mainRequestStepModel, mainRequests);
+		HashMap<Long, HashMap<Long, HashMap<Long, String>>> sendParallStepNumberVSOutJSON = new HashMap<>();
+		HashMap<Long, HashMap<Long, HashMap<Long, HashMap<Long, String>>>> sendParallStepNumberVSInNumberVSInJSON = new HashMap<>();
+		processSteps(steps, mainRequestStepModel, sendParallStepNumberVSOutJSON,
+				sendParallStepNumberVSInNumberVSInJSON);
+		executeStessTest(mainRequestStepModel, sendParallStepNumberVSOutJSON, sendParallStepNumberVSInNumberVSInJSON);
 	}
 
 	private void buildMap() {
 		stepKindVsProcessStepMap.put(StepKind.EDIT_FIELD, context.getBean(EditFieldStep.class)::processStep);
-		stepKindVsProcessStepMap.put(StepKind.MERGE_FIELD, context.getBean(MergeFieldsStep.class)::processStep);
+		stepKindVsProcessStepMap.put(StepKind.MAP_FIELD, context.getBean(MapFieldsStep.class)::processStep);
 		stepKindVsProcessStepMap.put(StepKind.SEND_REQUEST, context.getBean(SendRequestStep.class)::processStep);
 	}
 
-	private List<Result> generateMainRequest(List<Step> steps, MainRequestStepModel mainRequestStepModel) {
-		List<Result> mainRequests = new ArrayList<>();
+	private void processSteps(List<Step> steps, MainRequestStepModel mainRequestStepModel,
+			HashMap<Long, HashMap<Long, HashMap<Long, String>>> sendParallStepNumberVSOutJSON,
+			HashMap<Long, HashMap<Long, HashMap<Long, HashMap<Long, String>>>> sendParallStepNumberVSInNumberVSInJSON) {
 		StressConditions sc = mainRequestStepModel.getStressConditions();
 		Long parallelRequest = sc.getNumberOfParallelRequest();
 		Long repetitions = sc.getNumberOfTest();
 		for (long i = 0; i < repetitions; i++) {
+			HashMap<Long, HashMap<Long, HashMap<Long, String>>> spIn = new HashMap<>();
+			HashMap<Long, HashMap<Long, String>> spOut = new HashMap<>();
+			sendParallStepNumberVSOutJSON.put(i, spOut);
+			sendParallStepNumberVSInNumberVSInJSON.put(i, spIn);
 			for (long j = 0; j < parallelRequest; j++) {
-				mainRequests = generateMainRequest(steps, mainRequests, mainRequestStepModel);
+				HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON = new HashMap<>();
+				HashMap<Long, String> stepNumberVSOutJSON = new HashMap<>();
+				spOut.put(j, stepNumberVSOutJSON);
+				spIn.put(j, stepNumberVSInNumberVSInJSON);
+				processSteps(steps, stepNumberVSOutJSON, stepNumberVSInNumberVSInJSON);
 			}
 		}
-		return mainRequests;
-	}
-
-	private List<Result> generateMainRequest(List<Step> steps, List<Result> mainRequests,
-			MainRequestStepModel mainRequestStepModel) {
-		HashMap<Long, String> stepNumberVSOutJSON = new HashMap<>();
-		HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON = new HashMap<>();
-		processSteps(steps, stepNumberVSOutJSON, stepNumberVSInNumberVSInJSON);
-		Result result = generateMainRequest(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON, mainRequestStepModel);
-		mainRequests.add(result);
-		return mainRequests;
 	}
 
 	private void processSteps(List<Step> steps, HashMap<Long, String> stepNumberVSOutJSON,
@@ -95,28 +93,24 @@ public class TestExecution implements Runnable {
 		}
 	}
 
-	// TODO -> Default data shall process url -> Needs to update the variables in url
-	private Result generateMainRequest(HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON,
-			HashMap<Long, String> stepNumberVSOutJSON, MainRequestStepModel mainRequestStepModel) {
-		DefaultData dd=context.getBean(DefaultData.class);
-		Result result = new Result();
-		result.setMainURL(mainRequestStepModel.getRequestStepModel().getUrl());
-		result.setMainRequest(dd.getInputJson(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON,  mainRequestStepModel.getRequestStepModel().getInJson()).toString());
-		return result;
-	}
-
-	private void executeStessTest(MainRequestStepModel mainRequestStepModel, List<Result> mainRequests) {
+	private void executeStessTest(MainRequestStepModel mainRequestStepModel, HashMap<Long, HashMap<Long, HashMap<Long, String>>> sendParallStepNumberVSOutJSON,
+			HashMap<Long, HashMap<Long, HashMap<Long, HashMap<Long, String>>>> sendParallStepNumberVSInNumberVSInJSON) {
 		StressConditions sc = mainRequestStepModel.getStressConditions();
 		Long parallelRequest = sc.getNumberOfParallelRequest();
 		Long repetitions = sc.getNumberOfTest();
 		Long requestDelay = sc.getDelayBetweenParallelRequest();
 		Long parallelDelay = sc.getDelayBetweenParallelRequest();
-//		Long totalTest = parallelRequest * repetitions;
 		for (long i = 0; i < repetitions; i++) {
+			HashMap<Long, HashMap<Long, String>> spOut=sendParallStepNumberVSOutJSON.get(i);
+			HashMap<Long, HashMap<Long, HashMap<Long, String>>> spIn=sendParallStepNumberVSInNumberVSInJSON.get(i);
 			for (long j = 0; j < parallelRequest; j++) {
-				stressAsyncExecutor.execute(new StressExecution(repetitions, parallelRequest, tr.getId(),
-						mainRequests.get((int) (i * parallelRequest + j)), mainRequestStepModel,
-						context.getBean(TestExecutorController.class)));
+				HashMap<Long, String> stepNumberVSOutJSON=spOut.get(j);
+				HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON=spIn.get(j);
+				Result result =new Result();
+				result.setSendNumber(i);
+				result.setParallelNumber(j);
+				stressAsyncExecutor.execute(new StressExecution(tr.getId(), result, mainRequestStepModel,
+						stepNumberVSOutJSON, stepNumberVSInNumberVSInJSON, context));
 				trySleep(requestDelay);
 			}
 			trySleep(parallelDelay);

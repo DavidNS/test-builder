@@ -59,6 +59,7 @@ public class StepController {
 		Test test = testController.getOrThrow(userID, testID);
 		handle(userID, steps);
 		steps = saveSteps(steps);
+		test.getSteps().clear();
 		test.getSteps().addAll(steps);
 		testController.saveFull(test);
 		return steps;

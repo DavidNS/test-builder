@@ -37,7 +37,7 @@ public class TestExecutorController {
 
 	@Autowired
 	TestResultRepository resultRepository;
-	
+
 	@Autowired
 	ConfigurableApplicationContext context;
 
@@ -61,10 +61,11 @@ public class TestExecutorController {
 		return testResult;
 	}
 
-	public void updateTestResults(Long testResultID, Result result) {
+	public synchronized void updateTestResults(Long testResultID, Result result) {
 		TestResult testResult = resultRepository.findById(testResultID).get();
 		testResult.getResults().add(result);
 		resultRepository.save(testResult);
+
 //		Test test = testController.get(testID);
 //		List<TestResult> trs=test.getTestResult();
 //		trs.removeIf(tr -> {
@@ -97,7 +98,7 @@ public class TestExecutorController {
 
 	private void sortByOrderNumber(List<Step> steps) {
 		Collections.sort(steps, (one, two) -> {
-			return one.getStepOrder().intValue()- two.getStepOrder().intValue();
+			return one.getStepOrder().intValue() - two.getStepOrder().intValue();
 		});
 	}
 }
