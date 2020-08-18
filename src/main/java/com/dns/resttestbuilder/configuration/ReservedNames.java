@@ -29,4 +29,6 @@ public class ReservedNames {
 	private String urlBeginParam;
 
 	private String urlEndParam;
+	
+	private String methodCombinationSeparator;
 }

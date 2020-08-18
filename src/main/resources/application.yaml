@@ -8,6 +8,7 @@ reserved-names:
   map-combination-separator: "/AND/"
   url-begin-param: "<"
   url-end-param: ">"
+  method-combination-separator: "_"
 async-configuration:
   test-element-pool-size: 10
   test-element-max-queue: 30
