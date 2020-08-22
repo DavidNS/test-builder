@@ -4,20 +4,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dns.resttestbuilder.configuration.DefaultData;
 import com.dns.resttestbuilder.entity.User;
 import com.dns.resttestbuilder.exception.NotFoundException;
 import com.dns.resttestbuilder.repository.UserRepository;
+import com.dns.resttestbuilder.validation.DefaultData;
 
 import lombok.extern.slf4j.Slf4j;
 
+@Validated
 @RestController
 @Slf4j
 @RequestMapping(path = "/users")
@@ -38,7 +42,7 @@ public class UserController {
 	// TODO: This is the currently main mapping, because there is not security added yet ->
 	// Secure this app.
 	@PostMapping
-	User getOrReplaceFields(@RequestBody User user) {
+	User getOrReplaceFields(@Valid @RequestBody User user) {
 		return repository.findByName(user.getName()).stream().findFirst().map((u)->{
 			log.info("User found {}",user.getName());
 			return repository.save(handle(u, user));
@@ -53,7 +57,7 @@ public class UserController {
 	}
 
 
-	User getOrThrow(Long id) {
+	User getOrThrow(Long id) throws NotFoundException {
 		return repository.findById(id).orElseThrow(() -> new NotFoundException(User.class, id));
 	}
 	

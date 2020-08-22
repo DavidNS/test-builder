@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dns.resttestbuilder.configuration.DefaultData;
 import com.dns.resttestbuilder.entity.Project;
 import com.dns.resttestbuilder.entity.Test;
+import com.dns.resttestbuilder.exception.InvalidUserIDException;
+import com.dns.resttestbuilder.exception.UserIDNotFoundException;
 import com.dns.resttestbuilder.repository.TestRepository;
+import com.dns.resttestbuilder.validation.DefaultData;
 
 @RestController
 @RequestMapping(path="/users/{userID}")
@@ -42,7 +44,7 @@ public class TestController {
 	}
 	
 	@GetMapping("/tests/{id}")
-	Test getOrThrow(@PathVariable Long userID,@PathVariable Long id) {
+	Test getOrThrow(@PathVariable Long userID,@PathVariable Long id)  {
 		return repository.findById(id).map((pj)->{
 			defaultData.handleNotValidUserID(Test.class, id, pj.getUserID(), userID);
 			return pj;
@@ -50,14 +52,14 @@ public class TestController {
 	}
 	
 	@PutMapping("/tests/{id}")
-	Test replace(@PathVariable Long userID, @PathVariable Long id, @RequestBody Test test) {
+	Test replace(@PathVariable Long userID, @PathVariable Long id, @RequestBody Test test)  {
 		return repository.findById(id).map(pj -> {
 			return repository.save(handle(userID,pj,test));
 		}).orElseThrow(defaultData.getNotFoundSupplier(Test.class, id));
 	}
 	
 	@PostMapping("/projects/{projectID}/tests")
-	Test newItem(@PathVariable Long userID, @PathVariable Long projectID,@RequestBody Test test) {
+	Test newItem(@PathVariable Long userID, @PathVariable Long projectID,@RequestBody Test test)  {
 		Project project=projectController.getOrThrow(userID,projectID);
 		test=repository.save(handle(userID, new Test(), test));
 		project.getTests().add(test);
@@ -73,7 +75,7 @@ public class TestController {
 	}
 
 	
-	public Test handle(Long userID, Test dataToSave, Test newData) {
+	public Test handle(Long userID, Test dataToSave, Test newData) throws InvalidUserIDException, UserIDNotFoundException {
 		defaultData.handleCreatingObjectBeforeCreatingUser(userID);
 		defaultData.handleNotValidUserID(Test.class, dataToSave.getId(), dataToSave.getUserID(), userID);
 		

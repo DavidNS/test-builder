@@ -10,11 +10,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotBlank;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 
 @Entity
@@ -28,7 +28,7 @@ public class User {
 	Long id;
 	
 	@Column(unique = true)
-	@NonNull
+	@NotBlank(message = "Name is mandatory")
 	String name;
 
 	HashMap<String, String> userPreferences;

@@ -5,6 +5,6 @@ public class UserIDNotFoundException extends RuntimeException {
 	private static final long serialVersionUID = 749315864365942119L;
 
 	public UserIDNotFoundException() {
-		super("Se ha intentado crear un objeto sin antes haber creado sin identificador de usuario.\nDebe enviar un identificador de usuario.");
+		super("Trying to create an object without user-id. Must send a valid user-id to be allowed to create an object. If do not have an user-id, shall create the user first");
 	}
 }

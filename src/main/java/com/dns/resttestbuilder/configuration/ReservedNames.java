@@ -11,24 +11,34 @@ import lombok.Data;
 @EnableAutoConfiguration
 @ConfigurationProperties(prefix = "reserved-names")
 public class ReservedNames {
-	
+
 	private String arrayIdentifier;
-	
+
 	private String keyIdentifier;
-	
+
 	private String stepIdentifier;
-	
+
 	private String inputIdentifier;
-	
+
 	private String outputIdentifier;
-	
+
 	private String identifierSeparator;
 
 	private String mapCombinationSeparator;
-	
+
 	private String urlBeginParam;
 
 	private String urlEndParam;
+
 	
-	private String methodCombinationSeparator;
+	public String getStepInRegexp() {
+		return stepIdentifier + "\\d+" + identifierSeparator + inputIdentifier + "\\d+";
+	}
+	
+	public String getStepOutRegex() {
+		return stepIdentifier + "\\d+" + identifierSeparator + outputIdentifier;
+	}
+
+
+
 }

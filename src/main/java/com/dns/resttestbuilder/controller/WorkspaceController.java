@@ -13,10 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dns.resttestbuilder.configuration.DefaultData;
 import com.dns.resttestbuilder.entity.User;
 import com.dns.resttestbuilder.entity.Workspace;
+import com.dns.resttestbuilder.exception.NotFoundException;
 import com.dns.resttestbuilder.repository.WorkspaceRepository;
+import com.dns.resttestbuilder.validation.DefaultData;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,7 +45,7 @@ public class WorkspaceController {
 	}
 
 	@PostMapping
-	Workspace newItem(@PathVariable Long userID, @RequestBody Workspace workspace) {
+	Workspace newItem(@PathVariable Long userID, @RequestBody Workspace workspace)  {
 		log.info("Creating new workspace {}",workspace.getName());
 		User user = userController.getOrThrow(userID);
 		workspace = repository.save(handle(userID, new Workspace(), workspace));
@@ -62,14 +63,14 @@ public class WorkspaceController {
 	}
 
 	@PutMapping("/{id}")
-	Workspace replace(@PathVariable Long userID, @PathVariable Long id, @RequestBody Workspace workspace) {
+	Workspace replace(@PathVariable Long userID, @PathVariable Long id, @RequestBody Workspace workspace)  {
 		return repository.findById(id).map(ws -> {
 			return repository.save(handle(userID, ws, workspace));
 		}).orElseThrow(defaultData.getNotFoundSupplier(Workspace.class, id));
 	}
 
 	@DeleteMapping("/{id}")
-	void delete(@PathVariable Long userID, @PathVariable Long id) {
+	void delete(@PathVariable Long userID, @PathVariable Long id) throws NotFoundException {
 		User user = userController.getOrThrow(userID);
 		user.getWorkspaces().removeIf((wksUser) -> {
 			return wksUser.getId().equals(id);

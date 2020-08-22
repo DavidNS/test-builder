@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dns.resttestbuilder.configuration.DefaultData;
 import com.dns.resttestbuilder.entity.Project;
 import com.dns.resttestbuilder.entity.Workspace;
 import com.dns.resttestbuilder.repository.ProjectRepository;
+import com.dns.resttestbuilder.validation.DefaultData;
 
 @RestController
 @RequestMapping(path="/users/{userID}")
@@ -45,7 +45,7 @@ public class ProjectController {
 	}
 	
 	@GetMapping("/projects/{id}")
-	Project getOrThrow(@PathVariable Long userID,@PathVariable Long id) {
+	Project getOrThrow(@PathVariable Long userID,@PathVariable Long id)  {
 		return repository.findById(id).map((pj)->{
 			defaultData.handleNotValidUserID(Project.class, id, pj.getUserID(), userID);
 			return pj;
@@ -69,7 +69,7 @@ public class ProjectController {
 	}
 	
 	@DeleteMapping("/workspaces/{workspaceID}/projects/{id}")
-	void delete(@PathVariable Long userID,@PathVariable Long workspaceID,@PathVariable Long id) {
+	void delete(@PathVariable Long userID,@PathVariable Long workspaceID,@PathVariable Long id)  {
 		Workspace wk=workspaceController.getOrThrow(userID, workspaceID);
 		wk.getProjects().removeIf((pj)->{return pj.getId().equals(id);});
 		workspaceController.saveFull(wk);
@@ -82,10 +82,8 @@ public class ProjectController {
 		
 		dataToSave.setName(newData.getName());
 		dataToSave.setUserID(userID);
-
-//		defaultData.handleNullProperty(dataToSave::getJsonModels, ArrayList::new, dataToSave::setJsonModels);
+		
 		defaultData.handleNullProperty(dataToSave::getTests, ArrayList::new, dataToSave::setTests);
-//		defaultData.handleNullProperty(dataToSave::getSteps, ArrayList::new, dataToSave::setSteps);
 		
 		return dataToSave;
 	}

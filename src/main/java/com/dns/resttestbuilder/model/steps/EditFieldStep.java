@@ -9,11 +9,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.dns.resttestbuilder.configuration.DefaultData;
 import com.dns.resttestbuilder.configuration.ReservedNames;
 import com.dns.resttestbuilder.entity.Step;
-import com.dns.resttestbuilder.entity.embedded.EditFieldStepModel;
-import com.google.gson.Gson;
+import com.dns.resttestbuilder.entity.embeddedstep.EditFieldStepModel;
+import com.dns.resttestbuilder.model.JsonInParser;
+import com.dns.resttestbuilder.model.JsonStepParser;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -26,22 +26,27 @@ public class EditFieldStep {
 	ReservedNames reservedNames;
 
 	@Autowired
-	DefaultData defaultData;
+	JsonInParser jsonInParser;
+	
+	@Autowired
+	JsonStepParser jsonObjectParser;
+	
+	@Autowired
+	EditScripts editScripts;
 
 	public void processStep(Step step, HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON,
 			HashMap<Long, String> stepNumberVSOutJSON) {
 		Long stepNumber = step.getStepOrder();
-		EditFieldStepModel editFieldStepModel = new Gson().fromJson(step.getStepModel(), EditFieldStepModel.class);
-		
+		EditFieldStepModel editFieldStepModel =  jsonObjectParser.dbObjectToModel(step.getStepModel(), EditFieldStepModel.class,step::setStepModel) ;
 		String inFromModel = editFieldStepModel.getInJson();
 		Map<String, String> plainKeyFieldsVSMethod = editFieldStepModel.getPlainKeyVsMehtod();
-		JsonElement inJSON = defaultData.getInputJsonElement(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON,
+		JsonElement inJSON = jsonInParser.getInputJsonElement(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON,
 				inFromModel);
 		HashMap<Long, String> inNumberVsINJson = new HashMap<>();
 		inNumberVsINJson.put(1L, inJSON.toString());
 		stepNumberVSInNumberVSInJSON.put(stepNumber, inNumberVsINJson);
 		
-		JsonElement outJSON = defaultData.getInputJsonElement(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON,
+		JsonElement outJSON = jsonInParser.getInputJsonElement(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON,
 				inFromModel);
 		String outJSONString = applyScripts(outJSON, plainKeyFieldsVSMethod);
 		stepNumberVSOutJSON.put(stepNumber, outJSONString);
@@ -71,8 +76,8 @@ public class EditFieldStep {
 	private void iterateOverElements(String[] idElements, String methodName, JsonElement children) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		for (int i = 0; i < idElements.length; i++) {
 			String idElement = idElements[i];
-			if (defaultData.isOtherItem(idElements, i)) {
-				children = defaultData.getNextChildren(children, idElement);
+			if (jsonInParser.isOtherItem(idElements, i)) {
+				children = jsonInParser.getNextChildren(children, idElement);
 			} else {
 				updateValue(methodName, children, idElement);
 			}
@@ -111,7 +116,7 @@ public class EditFieldStep {
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		ArrayList<String> methodParams=new ArrayList<>();
 		ArrayList<Class<String>> cl=new ArrayList<>();
-		String[] methodIDs=method.split(reservedNames.getMapCombinationSeparator());
+		String[] methodIDs=method.split(reservedNames.getIdentifierSeparator());
 		String methodName=methodIDs[0];
 		methodParams.add(modelValue);
 		cl.add(String.class);
@@ -126,7 +131,7 @@ public class EditFieldStep {
 
 	private String invoke(String methodName, Class<?>[] clss, Object... mp)
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-		Method mt = EditScripts.class.getDeclaredMethod(methodName, clss);
-		return (String) mt.invoke(this, mp);
+		Method mt = editScripts.getClass().getDeclaredMethod(methodName, clss);
+		return (String) mt.invoke(editScripts, mp);
 	}
 }

@@ -2,15 +2,15 @@ package com.dns.resttestbuilder.entity;
 
 import java.util.List;
 
-import javax.persistence.ElementCollection;
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
-import com.dns.resttestbuilder.entity.embedded.MainRequestStepModel;
-import com.dns.resttestbuilder.entity.embedded.mainRequest.Result;
+import com.dns.resttestbuilder.entity.embeddedstep.MainRequestStepModel;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,8 +31,14 @@ public class TestResult {
 	@Embedded
 	MainRequestStepModel mainRequestStepModel;
 	
-	@ElementCollection(fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
 	List<Result> results;
 	
-	private boolean testSuccessful;
+	private Long timeOK=0L;
+	
+	private Long timeKO=0L;
+	
+	private Long formatOK=0L;
+	
+	private Long formatKO=0L;
 }

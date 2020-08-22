@@ -9,11 +9,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.dns.resttestbuilder.configuration.DefaultData;
 import com.dns.resttestbuilder.configuration.ReservedNames;
 import com.dns.resttestbuilder.entity.Step;
-import com.dns.resttestbuilder.entity.embedded.MapFieldStepModel;
-import com.google.gson.Gson;
+import com.dns.resttestbuilder.entity.embeddedstep.MapFieldStepModel;
+import com.dns.resttestbuilder.model.JsonInParser;
+import com.dns.resttestbuilder.model.JsonStepParser;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -25,13 +25,17 @@ public class MapFieldsStep {
 	@Autowired
 	ReservedNames reservedNames;
 
+	
 	@Autowired
-	DefaultData defaultData;
+	JsonStepParser jsonObjectParser;
+	
+	@Autowired
+	JsonInParser jsonInParser;
 
 	public void processStep(Step step, HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON,
 			HashMap<Long, String> stepNumberVSOutJSON) {
 		Long stepNumber = step.getStepOrder();
-		MapFieldStepModel mapFieldStepModel = new Gson().fromJson(step.getStepModel(), MapFieldStepModel.class);
+		MapFieldStepModel mapFieldStepModel =  jsonObjectParser.dbObjectToModel(step.getStepModel(), MapFieldStepModel.class,step::setStepModel) ;
 		List<String> inJSONsFromModel = mapFieldStepModel.getInJson();
 		HashMap<Long, String> inNumberVSinJsons = generateInJsonNumbers(inJSONsFromModel);
 		stepNumberVSInNumberVSInJSON.put(stepNumber, inNumberVSinJsons);
@@ -90,7 +94,7 @@ public class MapFieldsStep {
 			String idElement = idElements[i];
 			plainKeyBuilder.append(idElement);
 			String plainKey=plainKeyBuilder.toString();
-			if (defaultData.isOtherItem(idElements, i)) {
+			if (jsonInParser.isOtherItem(idElements, i)) {
 				JsonElement storedElement=plainKeysVsElements.get(plainKey);
 				if(storedElement!=null) {
 					children=storedElement;
@@ -144,33 +148,37 @@ public class MapFieldsStep {
 	}
 
 	private String processCombinations(String[] combinations, List<JsonElement> inJSON) {
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		for (String initialCombination : combinations) {
 			String[] identifiers = initialCombination.split(reservedNames.getIdentifierSeparator());
 			if (identifiers.length > 1) {
-				try {
-					String jsonNumber = identifiers[0].replaceFirst(reservedNames.getInputIdentifier(), "");
-					JsonElement in=inJSON.get(Integer.parseInt(jsonNumber));
-					String combinationResult = processCombination(in, identifiers);
-					result = result + combinationResult;
-				} catch (Exception e) {
-					result = result + initialCombination;
-				}
+				tryProcessCombination(inJSON, result, initialCombination, identifiers);
 			} else {
-				result = result + initialCombination;
+				result.append(initialCombination); 
 			}
-
 		}
-		return result;
+		return result.toString();
+	}
+
+	private void tryProcessCombination(List<JsonElement> inJSON, StringBuilder result, String initialCombination,
+			String[] identifiers) {
+		try {
+			String jsonNumber = identifiers[0].replaceFirst(reservedNames.getInputIdentifier(), "");
+			JsonElement in=inJSON.get(Integer.parseInt(jsonNumber));
+			String combinationResult = processCombination(in, identifiers);
+			result.append(combinationResult);
+		} catch (Exception e) {
+			result.append(initialCombination);
+		}
 	}
 
 	private String processCombination(JsonElement children, String[] keyTree) {
 		for (int i = 1; i < keyTree.length; i++) {
 			String key = keyTree[i];
-			if(defaultData.isOtherItem(keyTree, i)) {
-				children = defaultData.getNextChildren(children, key);
+			if(jsonInParser.isOtherItem(keyTree, i)) {
+				children = jsonInParser.getNextChildren(children, key);
 			}else {
-				children=defaultData.getLastChildren(children, key);
+				children=jsonInParser.getLastChildren(children, key);
 			}
 	
 		}
@@ -182,7 +190,7 @@ public class MapFieldsStep {
 			HashMap<Long, String> stepNumberVSOutJSON) {
 		List<JsonElement> inJsons = new ArrayList<>();
 		for (var jsonObject : inJSONsFromModel) {
-			JsonElement inJson = defaultData.getInputJsonElement(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON,
+			JsonElement inJson = jsonInParser.getInputJsonElement(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON,
 					jsonObject);
 			inJsons.add(inJson);
 		}

@@ -6,17 +6,18 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import org.springframework.context.ConfigurableApplicationContext;
 
+import com.dns.resttestbuilder.entity.Result;
 import com.dns.resttestbuilder.entity.Step;
 import com.dns.resttestbuilder.entity.StepKind;
 import com.dns.resttestbuilder.entity.Test;
 import com.dns.resttestbuilder.entity.TestResult;
-import com.dns.resttestbuilder.entity.embedded.MainRequestStepModel;
-import com.dns.resttestbuilder.entity.embedded.mainRequest.Result;
-import com.dns.resttestbuilder.entity.embedded.mainRequest.StressConditions;
+import com.dns.resttestbuilder.entity.embeddedstep.MainRequestStepModel;
+import com.dns.resttestbuilder.entity.embeddedstep.mainRequest.StressConditions;
 import com.dns.resttestbuilder.model.steps.EditFieldStep;
 import com.dns.resttestbuilder.model.steps.MapFieldsStep;
 import com.dns.resttestbuilder.model.steps.SendRequestStep;
 import com.dns.resttestbuilder.model.steps.StressExecution;
+import com.dns.resttestbuilder.model.steps.Times;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -47,9 +48,9 @@ public class TestExecution implements Runnable {
 
 	@Override
 	public void run() {
-		buildMap();
 		List<Step> steps = t.getSteps();
 		MainRequestStepModel mainRequestStepModel = tr.getMainRequestStepModel();
+		buildMap();
 		HashMap<Long, HashMap<Long, HashMap<Long, String>>> sendParallStepNumberVSOutJSON = new HashMap<>();
 		HashMap<Long, HashMap<Long, HashMap<Long, HashMap<Long, String>>>> sendParallStepNumberVSInNumberVSInJSON = new HashMap<>();
 		processSteps(steps, mainRequestStepModel, sendParallStepNumberVSOutJSON,
@@ -93,28 +94,43 @@ public class TestExecution implements Runnable {
 		}
 	}
 
-	private void executeStessTest(MainRequestStepModel mainRequestStepModel, HashMap<Long, HashMap<Long, HashMap<Long, String>>> sendParallStepNumberVSOutJSON,
+	private void executeStessTest(MainRequestStepModel mainRequestStepModel,
+			HashMap<Long, HashMap<Long, HashMap<Long, String>>> sendParallStepNumberVSOutJSON,
 			HashMap<Long, HashMap<Long, HashMap<Long, HashMap<Long, String>>>> sendParallStepNumberVSInNumberVSInJSON) {
 		StressConditions sc = mainRequestStepModel.getStressConditions();
 		Long parallelRequest = sc.getNumberOfParallelRequest();
 		Long repetitions = sc.getNumberOfTest();
 		Long requestDelay = sc.getDelayBetweenParallelRequest();
 		Long parallelDelay = sc.getDelayBetweenParallelRequest();
+		Times tt = newTimes(parallelRequest*repetitions);
 		for (long i = 0; i < repetitions; i++) {
-			HashMap<Long, HashMap<Long, String>> spOut=sendParallStepNumberVSOutJSON.get(i);
-			HashMap<Long, HashMap<Long, HashMap<Long, String>>> spIn=sendParallStepNumberVSInNumberVSInJSON.get(i);
+			Times pt = newTimes(parallelRequest);
+			HashMap<Long, HashMap<Long, String>> spOut = sendParallStepNumberVSOutJSON.get(i);
+			HashMap<Long, HashMap<Long, HashMap<Long, String>>> spIn = sendParallStepNumberVSInNumberVSInJSON.get(i);
 			for (long j = 0; j < parallelRequest; j++) {
-				HashMap<Long, String> stepNumberVSOutJSON=spOut.get(j);
-				HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON=spIn.get(j);
-				Result result =new Result();
-				result.setSendNumber(i);
-				result.setParallelNumber(j);
-				stressAsyncExecutor.execute(new StressExecution(tr.getId(), result, mainRequestStepModel,
+				HashMap<Long, String> stepNumberVSOutJSON = spOut.get(j);
+				HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON = spIn.get(j);
+				Result result = newResult(i, j);
+				stressAsyncExecutor.execute(new StressExecution(tt, pt, tr.getId(), result, mainRequestStepModel,
 						stepNumberVSOutJSON, stepNumberVSInNumberVSInJSON, context));
 				trySleep(requestDelay);
 			}
 			trySleep(parallelDelay);
 		}
+	}
+
+	private Result newResult(long i, long j) {
+		Result result = new Result();
+		result.setUserID(tr.getUserID());
+		result.getMeta().setSendNumber(i);
+		result.getMeta().setParallelNumber(j);
+		return result;
+	}
+
+	private Times newTimes(Long parallelRequest) {
+		Times pt = new Times();
+		pt.setExtectedResponses(parallelRequest);
+		return pt;
 	}
 
 	private void trySleep(long delayBetweenRequest) {

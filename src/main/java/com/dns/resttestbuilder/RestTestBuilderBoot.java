@@ -2,7 +2,6 @@ package com.dns.resttestbuilder;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,15 +11,17 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 import com.dns.resttestbuilder.configuration.AsyncConfiguration;
 import com.dns.resttestbuilder.configuration.ReservedNames;
+import com.dns.resttestbuilder.entity.Method;
 import com.dns.resttestbuilder.entity.Project;
 import com.dns.resttestbuilder.entity.Step;
 import com.dns.resttestbuilder.entity.StepKind;
-import com.dns.resttestbuilder.entity.embedded.EditFieldStepModel;
-import com.dns.resttestbuilder.entity.embedded.MainRequestStepModel;
-import com.dns.resttestbuilder.entity.embedded.MapFieldStepModel;
-import com.dns.resttestbuilder.entity.embedded.RequestStepModel;
-import com.dns.resttestbuilder.entity.embedded.mainRequest.ExpectedPerformaceResults;
-import com.dns.resttestbuilder.entity.embedded.mainRequest.StressConditions;
+import com.dns.resttestbuilder.entity.embeddedstep.EditFieldStepModel;
+import com.dns.resttestbuilder.entity.embeddedstep.MainRequestStepModel;
+import com.dns.resttestbuilder.entity.embeddedstep.MapFieldStepModel;
+import com.dns.resttestbuilder.entity.embeddedstep.RequestStepModel;
+import com.dns.resttestbuilder.entity.embeddedstep.mainRequest.ExpectedPerformaceResults;
+import com.dns.resttestbuilder.entity.embeddedstep.mainRequest.ResponseSuccessKind;
+import com.dns.resttestbuilder.entity.embeddedstep.mainRequest.StressConditions;
 import com.google.gson.Gson;
 
 
@@ -62,11 +63,11 @@ public class RestTestBuilderBoot {
 //		mapField.setOutPlainKeyVsMapCombination(outPlanKeyVSMapCombination);
 //		
 //		RequestStepModel rsMD=new RequestStepModel();
-//		rsMD.setUrl("http://someulrl.com/<<requestParam>>");
+//		rsMD.setUrl("http://localhost:8080/");
 //		HashMap<String, String> paramCombination=new HashMap<String, String>();
 //		paramCombination.put("requestParam", "STEP_0:OUT:KEY_name");
 //		rsMD.setUrlParamKeyVSCombination(paramCombination);
-//		rsMD.setMethod("POST");
+//		rsMD.setMethod(Method.GET);
 //		rsMD.setInJson("STEP_1:OUT");
 //		
 //		StressConditions sc=new StressConditions();
@@ -77,8 +78,10 @@ public class RestTestBuilderBoot {
 //		
 //		ExpectedPerformaceResults exPR=new ExpectedPerformaceResults();
 //		exPR.setExpectedPararellTime(1L);
-//		exPR.setExpectedRequestTime(1L);
+//		exPR.setExpectedSingleTime(1L);
 //		exPR.setExpectedTotalTime(1L);
+//		exPR.setResponseSuccessKind(ResponseSuccessKind.NONE);
+//		exPR.setForceTimeoutByMaxExpectedTime(false);
 //		
 //		MainRequestStepModel mainRequest=new MainRequestStepModel();
 //		
@@ -90,7 +93,7 @@ public class RestTestBuilderBoot {
 //		step0.setName("EditFieldStep");
 //		step0.setStepKind(StepKind.EDIT_FIELD);
 //		step0.setStepOrder(0L);
-//		step0.setStepModel(new Gson().toJson(editField));
+//		step0.setStepModel(editField);
 //		
 //		
 //		
@@ -98,13 +101,13 @@ public class RestTestBuilderBoot {
 //		step1.setName("MapFieldStep");
 //		step1.setStepKind(StepKind.MAP_FIELD);
 //		step1.setStepOrder(1L);
-//		step1.setStepModel(new Gson().toJson(mapField));
+//		step1.setStepModel(mapField);
 //		
 //		Step step2=new Step();
 //		step2.setName("MainRequestStep");
 //		step2.setStepKind(StepKind.SEND_MAIN_REQUEST);
 //		step2.setStepOrder(2L);
-//		step2.setStepModel(new Gson().toJson(mainRequest));
+//		step2.setStepModel(mainRequest);
 //		
 //		Step[] steps=new Step[]{step0,step1,step2};
 //		

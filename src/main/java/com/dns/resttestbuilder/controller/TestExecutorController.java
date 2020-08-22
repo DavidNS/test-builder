@@ -12,15 +12,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dns.resttestbuilder.configuration.AsyncConfiguration;
-import com.dns.resttestbuilder.configuration.DefaultData;
+import com.dns.resttestbuilder.entity.Result;
 import com.dns.resttestbuilder.entity.Step;
 import com.dns.resttestbuilder.entity.Test;
 import com.dns.resttestbuilder.entity.TestResult;
-import com.dns.resttestbuilder.entity.embedded.MainRequestStepModel;
-import com.dns.resttestbuilder.entity.embedded.mainRequest.Result;
+import com.dns.resttestbuilder.entity.embeddedresult.Evaluation;
+import com.dns.resttestbuilder.entity.embeddedstep.MainRequestStepModel;
+import com.dns.resttestbuilder.entity.embeddedstep.mainRequest.ExpectedPerformaceResults;
+import com.dns.resttestbuilder.model.JsonStepParser;
 import com.dns.resttestbuilder.model.TestExecution;
-import com.dns.resttestbuilder.repository.TestResultRepository;
-import com.google.gson.Gson;
+import com.dns.resttestbuilder.model.steps.Times;
 
 @RestController
 @RequestMapping(path = "/users/{userID}")
@@ -30,13 +31,16 @@ public class TestExecutorController {
 	TestController testController;
 
 	@Autowired
-	DefaultData defaultData;
-
+	JsonStepParser parser;
+	
 	@Autowired
 	AsyncConfiguration asyncConfiguration;
 
 	@Autowired
-	TestResultRepository resultRepository;
+	TestResultController testResultController;
+
+	@Autowired
+	ResultController resultController;
 
 	@Autowired
 	ConfigurableApplicationContext context;
@@ -46,35 +50,44 @@ public class TestExecutorController {
 		Test t = testController.getOrThrow(userID, testID);
 		TestResult tr = createTestResult(t, userID);
 		t.getTestResult().add(tr);
-		resultRepository.save(tr);
+		testResultController.saveFull(tr);
 		testController.saveFull(t);
 		startAsyncTestExecution(t, tr);
 		return tr;
 	}
 
-	@GetMapping("/testresults/{testResultID}")
-	TestResult getOrTrow(@PathVariable Long userID, @PathVariable Long testResultID) {
-		TestResult testResult = resultRepository.findById(testResultID).map((tr) -> {
-			defaultData.handleNotValidUserID(TestResult.class, testResultID, tr.getUserID(), userID);
-			return tr;
-		}).orElseThrow(defaultData.getNotFoundSupplier(TestResult.class, testResultID));
-		return testResult;
-	}
 
-	public synchronized void updateTestResults(Long testResultID, Result result) {
-		TestResult testResult = resultRepository.findById(testResultID).get();
+	public synchronized void updateTestResults(Long testResultID, Result result, Times tt, Times pt) {
+		TestResult testResult = testResultController.findById(testResultID);
+		ExpectedPerformaceResults exRS = testResult.getMainRequestStepModel().getExpectedPerformaceResults();
+		result=resultController.saveFull(result);
 		testResult.getResults().add(result);
-		resultRepository.save(testResult);
-
-//		Test test = testController.get(testID);
-//		List<TestResult> trs=test.getTestResult();
-//		trs.removeIf(tr -> {
-//			return tr.getId().equals(testID);
-//		});
-//		trs.add(testResult);
-//		testController.saveFull(test);
-
+		testResultController.saveFull(testResult);
+		resultController.updateTimes(exRS, result, tt, pt);	
+		testResult = testResultController.findById(testResultID);
+		updateTimesOKKOCount(testResult);
+		testResultController.saveFull(testResult);
+		
 	}
+
+	private void updateTimesOKKOCount(TestResult testResult) {
+		List<Result> rs=testResult.getResults();
+		for (Result r : rs) {
+			Evaluation eval=r.getEvaluation();
+			if(eval.getTimePassed()!=null) {
+				if(eval.getTimePassed()) {
+					Long ok=testResult.getTimeOK();
+					ok++;
+					testResult.setFormatOK(ok);
+				}else {
+					Long ko=testResult.getTimeKO();
+					ko++;
+					testResult.setFormatKO(ko);
+				}
+			}
+		}
+	}
+
 
 	private TestResult createTestResult(Test test, Long userID) {
 		TestResult tr = new TestResult();
@@ -93,7 +106,9 @@ public class TestExecutorController {
 	}
 
 	private MainRequestStepModel getMainRequestStepModel(List<Step> steps) {
-		return new Gson().fromJson(steps.get(steps.size() - 1).getStepModel(), MainRequestStepModel.class);
+		Step mainRequestStep=steps.get(steps.size() - 1);
+		MainRequestStepModel mr= parser.dbObjectToModel(mainRequestStep.getStepModel(),MainRequestStepModel.class,mainRequestStep::setStepModel);
+		return mr;
 	}
 
 	private void sortByOrderNumber(List<Step> steps) {
