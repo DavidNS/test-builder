@@ -41,7 +41,7 @@ public class Step {
 
 	
 	@NotNull(message = "Step model is mandatory")
-	@Convert(converter = HashMapConverter.class)
+	@Convert(converter = JSONObjectConverter.class)
 	@Lob
 	Object stepModel;
 

@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import org.springframework.stereotype.Component;
 
-import com.dns.resttestbuilder.controller.dto.StepRest;
+import com.dns.resttestbuilder.entity.Step;
 import com.dns.resttestbuilder.entity.embeddedstep.MainRequestStepModel;
 import com.dns.resttestbuilder.entity.embeddedstep.RequestStepModel;
 import com.dns.resttestbuilder.entity.embeddedstep.mainRequest.ExpectedPerformaceResults;
@@ -16,23 +16,34 @@ import com.dns.resttestbuilder.validation.AStepValidation;
 public class MainRequestStepValidaton extends AStepValidation<MainRequestStepModel> {
 
 	@Override
-	public void handle(StepRest<MainRequestStepModel> step, HashMap<Long, Integer> stepNumberVsInJson) {
+	public void handle(Step step,	MainRequestStepModel mainRequestStepModel, HashMap<Long, Integer> stepNumberVsInJson) {
 		Long stepOrder = step.getStepOrder();
-		MainRequestStepModel mainRequestStepModel = step.getStepModel();
 		ExpectedPerformaceResults expectedPerformaceResults = mainRequestStepModel.getExpectedPerformaceResults();
 		RequestStepModel requestStepModel = mainRequestStepModel.getRequestStepModel();
 		ResponseSuccessKind responseSuccessKind = expectedPerformaceResults.getResponseSuccessKind();
-		if (needsModel(responseSuccessKind) && expectedPerformaceResults.getPlainKeyVSExpectedOutValue()==null) {
-			throw new NullPropertyException(expectedPerformaceResults, "plainKeyVSExpectedOutValue, if needs to be compared against model.");
-		}
-		validatorCustom.handleInJSON(step, requestStepModel.getInJson(), stepNumberVsInJson);
+		handleOutput(expectedPerformaceResults, responseSuccessKind);
+		handleCode(expectedPerformaceResults, responseSuccessKind);
+		handleInJSON(step, requestStepModel.getInJson(), stepNumberVsInJson);
 		stepNumberVsInJson.put(stepOrder, 1);
 	}
 
-	private boolean needsModel(ResponseSuccessKind responseSuccessKind) {
-		return !(responseSuccessKind.equals(ResponseSuccessKind.NONE)
-				|| responseSuccessKind.equals(ResponseSuccessKind.RESPONSE_RECEIVED)
-				|| responseSuccessKind.equals(ResponseSuccessKind.RESPONSE_SUCCESS));
+	private void handleCode(ExpectedPerformaceResults expectedPerformaceResults,
+			ResponseSuccessKind responseSuccessKind) {
+		if(needsCode(responseSuccessKind)&& expectedPerformaceResults.getExpectedHttpStatus()==null ) {
+			throw new NullPropertyException(expectedPerformaceResults, "expectedHttpStatus, if the property responseSuccessKind needs to chech the http code.");
+		}
+	}
+
+	private void handleOutput(ExpectedPerformaceResults expectedPerformaceResults,
+			ResponseSuccessKind responseSuccessKind) {
+		if (responseSuccessKind.equals(ResponseSuccessKind.AS_EXPECTED) && expectedPerformaceResults.getOutput()==null) {
+			throw new NullPropertyException(expectedPerformaceResults, "output, if the property responseSuccessKind needs to be compared against model.");
+		}
+	}
+	
+	private boolean needsCode(ResponseSuccessKind responseSuccessKind) {
+		return ( responseSuccessKind.equals(ResponseSuccessKind.SUCCESS)
+				|| responseSuccessKind.equals(ResponseSuccessKind.AS_EXPECTED));
 	}
 	
 }

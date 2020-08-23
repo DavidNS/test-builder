@@ -28,7 +28,7 @@ public class RestClient {
 	ReservedNames reservedNames;
 
 	@Autowired
-	JsonInParser jsonInParser;
+	ReservedNamesParser reservedNamesParser;
 
 	private static final String MEDIA_TYPE = "application/json;charset=" + StandardCharsets.UTF_8.displayName();
 
@@ -69,54 +69,13 @@ public class RestClient {
 	private void processCombinationEntry(Entry<String, String> entry, HashMap<String, JsonElement> storedElements,
 			Map<String, String> entryVSFinalValue, HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON,
 			HashMap<Long, String> stepNumberVSOutJSON) {
-		String paramName = entry.getKey();
-		String initialCombination = entry.getValue();
-		String[] combinations = initialCombination.split(reservedNames.getMapCombinationSeparator());
-		if (combinations.length > 0) {
-			String combinationResult = processCombinations(combinations, storedElements, stepNumberVSInNumberVSInJSON,
-					stepNumberVSOutJSON);
-			entryVSFinalValue.put(paramName, combinationResult);
-		} else {
-			entryVSFinalValue.put(paramName, initialCombination);
-		}
+		String combinationResult = reservedNamesParser.processCombinations(entry.getValue(), storedElements, stepNumberVSInNumberVSInJSON,
+				stepNumberVSOutJSON);
+		entryVSFinalValue.put( entry.getKey(), combinationResult);
 
 	}
 
-	private String processCombinations(String[] combinations, HashMap<String, JsonElement> storedElements,
-			HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON,
-			HashMap<Long, String> stepNumberVSOutJSON) {
-		StringBuilder result = new StringBuilder();
-		for (String combination : combinations) {
-			String[] identifiers = combination.split(reservedNames.getIdentifierSeparator());
-			if (identifiers.length > 2) {
-				tryProcessCombination(storedElements, stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON, result, combination,
-						identifiers);
-			} else {
-				result.append(combination);
-			}
-		}
-		return result.toString();
-	}
-
-	private void tryProcessCombination(HashMap<String, JsonElement> storedElements,
-			HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON,
-			HashMap<Long, String> stepNumberVSOutJSON, StringBuilder result, String combination, String[] identifiers) {
-		try {
-			String stepID = identifiers[0];
-			String jsonID = identifiers[1];
-			String stepAndJson = stepID + reservedNames.getIdentifierSeparator() + jsonID;
-			JsonElement element = storedElements.get(stepAndJson);
-			if (element == null) {
-				element = jsonInParser.getInputJsonElement(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON,
-						stepAndJson);
-				storedElements.put(stepAndJson, element);
-			}
-			String combinationResult = processCombination(element, identifiers);
-			result.append(combinationResult);
-		} catch (Exception e) {
-			result.append(combination);
-		}
-	}
+	
 
 	private String generateFinalUrl(String[] totalSplit, Map<String, String> entryVSFinalValue,
 			String defaultEndpoint) {
@@ -139,20 +98,6 @@ public class RestClient {
 		return stringBuilder.toString();
 	}
 
-
-
-	private String processCombination(JsonElement children, String[] keyTree) {
-		for (int i = 2; i < keyTree.length; i++) {
-			String key = keyTree[i];
-			if (jsonInParser.isOtherItem(keyTree, i)) {
-				children = jsonInParser.getNextChildren(children, key);
-			} else {
-				children = jsonInParser.getLastChildren(children, key);
-			}
-
-		}
-		return children.getAsString();
-	}
 
 	public String[] generateEnpointParamSplit(String url) {
 		String[] split1 = url.split(reservedNames.getUrlBeginParam());

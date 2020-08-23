@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Evaluation {
 	
-	Boolean responseReceived=false;
-
 	Boolean formatPassed;
 	
 	Boolean timePassed;

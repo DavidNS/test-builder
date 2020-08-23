@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RequestStepModel {
 
-	@NotBlank(message = "Enponint is required to send a request")
+	@NotBlank(message = "Endpoint is required to send a request")
 	String url;
 	
 

@@ -1,12 +1,14 @@
 package com.dns.resttestbuilder.entity.embeddedstep;
 
 import java.util.List;
-import java.util.Map;
 
-import javax.persistence.ElementCollection;
+import javax.persistence.Convert;
 import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
+import javax.persistence.Lob;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import com.dns.resttestbuilder.entity.JSONObjectConverter;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,9 +21,10 @@ import lombok.NoArgsConstructor;
 public class MapFieldStepModel   {
 	
 	@NotEmpty(message = "A least one JSON or reference to another input is required")
-	List<String> inJson;
+	List<String> inJsons;
 	
-	@NotEmpty(message = "Map field step must contains at least one entry")
-	@ElementCollection(fetch = FetchType.EAGER)
-	Map<String, String> outPlainKeyVsMapCombination;
+	@NotNull(message = "Map field step must contains at least one entry")
+	@Convert(converter = JSONObjectConverter.class)
+	@Lob
+	Object outJson;
 }

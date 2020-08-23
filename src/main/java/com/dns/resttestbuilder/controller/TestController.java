@@ -83,7 +83,7 @@ public class TestController {
 		dataToSave.setUserID(userID);
 		
 		defaultData.handleNullProperty(dataToSave::getSteps, ArrayList::new, dataToSave::setSteps);
-		defaultData.handleNullProperty(dataToSave::getTestResult, ArrayList::new, dataToSave::setTestResult);
+		defaultData.handleNullProperty(dataToSave::getTestResults, ArrayList::new, dataToSave::setTestResults);
 		return dataToSave;
 	}
 
@@ -95,4 +95,5 @@ public class TestController {
 	Test get(Long testID) {
 		return repository.findById(testID).get();
 	}
+
 }

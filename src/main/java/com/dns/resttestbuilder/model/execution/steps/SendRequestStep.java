@@ -1,4 +1,4 @@
-package com.dns.resttestbuilder.model.steps;
+package com.dns.resttestbuilder.model.execution.steps;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 import com.dns.resttestbuilder.entity.Method;
 import com.dns.resttestbuilder.entity.Step;
 import com.dns.resttestbuilder.entity.embeddedstep.RequestStepModel;
-import com.dns.resttestbuilder.model.JsonInParser;
-import com.dns.resttestbuilder.model.JsonStepParser;
+import com.dns.resttestbuilder.model.ReservedNamesParser;
+import com.dns.resttestbuilder.model.JsonObjectParser;
 import com.dns.resttestbuilder.model.RestClient;
 import com.google.gson.JsonObject;
 import com.squareup.okhttp.Call;
@@ -24,10 +24,10 @@ public class SendRequestStep {
 
 	
 	@Autowired
-	JsonStepParser jsonObjectParser;
+	JsonObjectParser jsonObjectParser;
 	
 	@Autowired
-	JsonInParser jsonInParser;
+	ReservedNamesParser jsonInParser;
 
 	@Autowired
 	RestClient restClient;
@@ -35,7 +35,7 @@ public class SendRequestStep {
 	public void processStep(Step step, HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON,
 			HashMap<Long, String> stepNumberVSOutJSON) {
 		Long stepNumber = step.getStepOrder();
-		RequestStepModel requestStepModel =  jsonObjectParser.dbObjectToModel(step.getStepModel(), RequestStepModel.class,step::setStepModel) ;
+		RequestStepModel requestStepModel =  jsonObjectParser.objectToModel(step.getStepModel(), RequestStepModel.class,step::setStepModel) ;
 		String endpoint = requestStepModel.getUrl();
 		Method method = requestStepModel.getMethod();
 		Map<String, String> paramVsCombination = requestStepModel.getUrlParamKeyVSCombination();

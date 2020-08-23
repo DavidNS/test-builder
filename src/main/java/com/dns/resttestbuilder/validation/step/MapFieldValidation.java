@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.dns.resttestbuilder.controller.dto.StepRest;
+import com.dns.resttestbuilder.entity.Step;
 import com.dns.resttestbuilder.entity.embeddedstep.MapFieldStepModel;
 import com.dns.resttestbuilder.validation.AStepValidation;
 
@@ -13,12 +13,11 @@ import com.dns.resttestbuilder.validation.AStepValidation;
 public class MapFieldValidation extends AStepValidation<MapFieldStepModel>{
 
 	@Override
-	public void handle(StepRest<MapFieldStepModel> step, HashMap<Long, Integer> stepNumberVsInJson) {
+	public void handle(Step step,	MapFieldStepModel mapFieldStepModel , HashMap<Long, Integer> stepNumberVsInJson) {
 		Long stepOrder = step.getStepOrder();
-		MapFieldStepModel mapFieldStepModel =   step.getStepModel();
-		List<String> inJSON = mapFieldStepModel.getInJson();
+		List<String> inJSON = mapFieldStepModel.getInJsons();
 		for (String in : inJSON) {
-			validatorCustom.handleInJSON(step, in, stepNumberVsInJson);
+			handleInJSON(step, in, stepNumberVsInJson);
 		}
 		stepNumberVsInJson.put(stepOrder, inJSON.size());
 		

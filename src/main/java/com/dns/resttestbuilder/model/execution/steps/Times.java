@@ -1,4 +1,4 @@
-package com.dns.resttestbuilder.model.steps;
+package com.dns.resttestbuilder.model.execution.steps;
 
 import java.util.ArrayList;
 import java.util.Date;

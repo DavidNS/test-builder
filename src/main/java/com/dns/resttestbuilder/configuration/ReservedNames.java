@@ -12,10 +12,10 @@ import lombok.Data;
 @ConfigurationProperties(prefix = "reserved-names")
 public class ReservedNames {
 
-	private String arrayIdentifier;
+	private String arrayBeginIdentifier;
 
-	private String keyIdentifier;
-
+	private String arrayEndIdentifier;
+	
 	private String stepIdentifier;
 
 	private String inputIdentifier;
@@ -23,6 +23,8 @@ public class ReservedNames {
 	private String outputIdentifier;
 
 	private String identifierSeparator;
+	
+	private String identifierSeparatorNotEscaped;
 
 	private String mapCombinationSeparator;
 

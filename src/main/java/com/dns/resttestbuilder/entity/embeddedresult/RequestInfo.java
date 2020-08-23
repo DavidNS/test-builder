@@ -19,9 +19,13 @@ public class RequestInfo {
 	@Enumerated(EnumType.STRING)
 	Method method;
 	
-	String mainUrl;
+	String url;
 	
-	String mainRequest;
+	String request;
 
-	String mainResponse;
+	String response;
+	
+	Boolean responseReceived=false;
+	
+	int responseCode;
 }

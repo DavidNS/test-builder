@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import org.springframework.stereotype.Component;
 
-import com.dns.resttestbuilder.controller.dto.StepRest;
+import com.dns.resttestbuilder.entity.Step;
 import com.dns.resttestbuilder.entity.embeddedstep.RequestStepModel;
 import com.dns.resttestbuilder.validation.AStepValidation;
 
@@ -12,9 +12,9 @@ import com.dns.resttestbuilder.validation.AStepValidation;
 public class ResquesStepValidation extends AStepValidation<RequestStepModel>{
 
 	@Override
-	public void handle(StepRest<RequestStepModel> step, HashMap<Long, Integer> stepNumberVsInJson) {
+	public void handle(Step step, RequestStepModel requestStepModel, HashMap<Long, Integer> stepNumberVsInJson) {
 		Long stepOrder = step.getStepOrder();
-		validatorCustom.handleInJSON(step, step.getStepModel().getInJson(), stepNumberVsInJson);
+		handleInJSON(step, requestStepModel.getInJson(), stepNumberVsInJson);
 		stepNumberVsInJson.put(stepOrder, 1);
 	}
 

@@ -28,7 +28,7 @@ public class Test {
 	String name;
 	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	List<TestResult> testResult;
+	List<TestResult> testResults;
 	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	List<Step> steps;

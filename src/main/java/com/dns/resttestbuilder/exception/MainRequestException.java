@@ -1,6 +1,6 @@
 package com.dns.resttestbuilder.exception;
 
-import com.dns.resttestbuilder.controller.dto.StepRest;
+import com.dns.resttestbuilder.entity.Step;
 import com.dns.resttestbuilder.entity.StepKind;
 
 public class MainRequestException extends RuntimeException {
@@ -12,14 +12,14 @@ public class MainRequestException extends RuntimeException {
 				+ ", is mandatory. It also shall have the last order number");
 	}
 
-	public MainRequestException(StepRest<?>... one) {
+	public MainRequestException(Step... one) {
 		super("Detected duplicated kinds: " + StepKind.SEND_MAIN_REQUEST + ", conflict steps: "+writeConflicts(one));
 	}
 
-	private static String writeConflicts(StepRest<?>[] one) {
+	private static String writeConflicts(Step[] one) {
 		StringBuilder stringBuilder=new StringBuilder();
 		stringBuilder.append(System.lineSeparator());
-		for (StepRest<?> step : one) {
+		for (Step step : one) {
 			stringBuilder.append(" with name: " );
 			stringBuilder.append(step.getName());
 			stringBuilder.append(" with values: ");

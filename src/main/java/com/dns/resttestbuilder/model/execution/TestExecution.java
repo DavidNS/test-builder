@@ -1,4 +1,4 @@
-package com.dns.resttestbuilder.model;
+package com.dns.resttestbuilder.model.execution;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,11 +13,11 @@ import com.dns.resttestbuilder.entity.Test;
 import com.dns.resttestbuilder.entity.TestResult;
 import com.dns.resttestbuilder.entity.embeddedstep.MainRequestStepModel;
 import com.dns.resttestbuilder.entity.embeddedstep.mainRequest.StressConditions;
-import com.dns.resttestbuilder.model.steps.EditFieldStep;
-import com.dns.resttestbuilder.model.steps.MapFieldsStep;
-import com.dns.resttestbuilder.model.steps.SendRequestStep;
-import com.dns.resttestbuilder.model.steps.StressExecution;
-import com.dns.resttestbuilder.model.steps.Times;
+import com.dns.resttestbuilder.model.execution.steps.EditFieldStep;
+import com.dns.resttestbuilder.model.execution.steps.MapFieldsStep;
+import com.dns.resttestbuilder.model.execution.steps.SendRequestStep;
+import com.dns.resttestbuilder.model.execution.steps.StressExecution;
+import com.dns.resttestbuilder.model.execution.steps.Times;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

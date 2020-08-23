@@ -17,17 +17,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dns.resttestbuilder.controller.dto.StepRest;
 import com.dns.resttestbuilder.entity.Step;
 import com.dns.resttestbuilder.entity.StepKind;
 import com.dns.resttestbuilder.entity.Test;
 import com.dns.resttestbuilder.exception.MainRequestException;
 import com.dns.resttestbuilder.exception.NotValidStepOrderException;
-import com.dns.resttestbuilder.model.JsonStepParser;
+import com.dns.resttestbuilder.model.JsonObjectParser;
 import com.dns.resttestbuilder.repository.StepRepository;
 import com.dns.resttestbuilder.validation.AStepValidation;
 import com.dns.resttestbuilder.validation.DefaultData;
-import com.dns.resttestbuilder.validation.ValidatorCustom;
 import com.dns.resttestbuilder.validation.step.EditFieldStepValidation;
 import com.dns.resttestbuilder.validation.step.MainRequestStepValidaton;
 import com.dns.resttestbuilder.validation.step.MapFieldValidation;
@@ -42,10 +40,7 @@ public class StepController {
 	DefaultData defaultData;
 
 	@Autowired
-	JsonStepParser jsonObjectParser;
-
-	@Autowired
-	ValidatorCustom validatorCustom;
+	JsonObjectParser jsonObjectParser;
 
 	@Autowired
 	StepRepository repository;
@@ -126,7 +121,7 @@ public class StepController {
 			throw new MainRequestException();
 		}
 		if (mainRequestSteps.size() > 1) {
-			throw new MainRequestException(mainRequestSteps.toArray(StepRest<?>[]::new));
+			throw new MainRequestException(mainRequestSteps.toArray(Step[]::new));
 		}
 		return stepsToReturn;
 

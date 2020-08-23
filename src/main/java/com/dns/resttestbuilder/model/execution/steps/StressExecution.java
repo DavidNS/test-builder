@@ -1,4 +1,4 @@
-package com.dns.resttestbuilder.model.steps;
+package com.dns.resttestbuilder.model.execution.steps;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -9,10 +9,13 @@ import org.springframework.context.ConfigurableApplicationContext;
 import com.dns.resttestbuilder.controller.TestExecutorController;
 import com.dns.resttestbuilder.entity.Method;
 import com.dns.resttestbuilder.entity.Result;
+import com.dns.resttestbuilder.entity.embeddedresult.RequestInfo;
 import com.dns.resttestbuilder.entity.embeddedstep.MainRequestStepModel;
 import com.dns.resttestbuilder.entity.embeddedstep.mainRequest.ExpectedPerformaceResults;
-import com.dns.resttestbuilder.model.JsonInParser;
+import com.dns.resttestbuilder.model.ReservedNamesParser;
 import com.dns.resttestbuilder.model.RestClient;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Response;
 
@@ -27,6 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class StressExecution implements Runnable {
 
+	private static final int HTTP_STATUS_STRESS_ERROR = 999;
+	
 	Times tt;
 	Times pt;
 
@@ -40,13 +45,13 @@ public class StressExecution implements Runnable {
 	@Override
 	public void run() {
 		RestClient restClient = context.getBean(RestClient.class);
-		JsonInParser jsParser = context.getBean(JsonInParser.class);
+		ReservedNamesParser jsParser = context.getBean(ReservedNamesParser.class);
 		TestExecutorController testExecutorController = context.getBean(TestExecutorController.class);
 		String endpoint = mainRequestStepModel.getRequestStepModel().getUrl();
 		Method method = mainRequestStepModel.getRequestStepModel().getMethod();
 		String mainRequestBody = mainRequestStepModel.getRequestStepModel().getInJson();
-		String stringBody = jsParser.getInputJsonElement(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON, mainRequestBody)
-				.toString();
+		String stringBody = jsParser
+				.getInputJsonElement(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON, mainRequestBody).toString();
 		String threadName = "StressExecutionExecution: " + result.getMeta().getSendNumber() + " parallelOrder: "
 				+ result.getMeta().getParallelNumber();
 		Map<String, String> paramVSCombination = mainRequestStepModel.getRequestStepModel()
@@ -55,22 +60,25 @@ public class StressExecution implements Runnable {
 		String updatedEndpoint = restClient.generateCombinedEndpoint(endpoint, paramVSCombination,
 				stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON);
 		tryCall(restClient, updatedEndpoint, method, stringBody, threadName);
-		testExecutorController.updateTestResults(testResultID, result, tt, pt);
+		testExecutorController.updateTestResults(testResultID, result, tt, pt, stepNumberVSInNumberVSInJSON,
+				stepNumberVSOutJSON);
 	}
 
 	private void tryCall(RestClient restClient, String endpoint, Method method, String stringBody, String threadName) {
 		try {
-			result.getRequestInfo().setMainUrl(endpoint);
-			result.getRequestInfo().setMainRequest(stringBody);
+			result.getRequestInfo().setUrl(endpoint);
+			result.getRequestInfo().setRequest(stringBody);
 			result.getRequestInfo().setMethod(method);
 			Call call = createCall(restClient, endpoint, method, stringBody);
 			result.getDates().setRequestDate(new Date());
 			Response response = call.execute();
 			result.getDates().setResponseDate(new Date());
-			updateResponseStatus(response.body().string(), true);
+			updateResponseStatus(response.body().string(), response.code(), true);
 		} catch (Exception e) {
 			result.getDates().setResponseDate(new Date());
-			updateResponseStatus("Not recived response from endpoint, Caused by: " + e.getMessage(), false);
+			JsonObject js=new JsonObject();
+			js.add("stress-execution-error", new JsonPrimitive("Not recived response from endpoint, Caused by: " + e.getMessage()));
+			updateResponseStatus(js.toString(), HTTP_STATUS_STRESS_ERROR, false);
 			log.error("Error al ejecutar el hilo: {} endpoint: {} method: {} body: {}", threadName, endpoint, method,
 					stringBody, e);
 		}
@@ -89,8 +97,10 @@ public class StressExecution implements Runnable {
 		}
 	}
 
-	private void updateResponseStatus(String responseBody, boolean received) {
-		result.getRequestInfo().setMainResponse(responseBody);
-		result.getEvaluation().setResponseReceived(received);
+	private void updateResponseStatus(String responseBody, int httpStatus, boolean received) {
+		RequestInfo requestInfo=result.getRequestInfo();
+		requestInfo.setResponseCode(httpStatus);
+		requestInfo.setResponse(responseBody);
+		requestInfo.setResponseReceived(received);
 	}
 }
