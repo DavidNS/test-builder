@@ -37,9 +37,9 @@ public class TestResultController {
 
 
 	
-	@DeleteMapping("/tests/{projectID}/tests/{id}")
-	void delete(@PathVariable Long userID,@PathVariable Long projectID,@PathVariable Long id) {
-		Test project=testCntroller.getOrThrow(userID, projectID);
+	@DeleteMapping("/tests/{testID}/testresults/{id}")
+	void delete(@PathVariable Long userID,@PathVariable Long testID,@PathVariable Long id) {
+		Test project=testCntroller.getOrThrow(userID, testID);
 		project.getTestResults().removeIf((t)->{return t.getId().equals(id);});
 		testCntroller.saveFull(project);
 	}

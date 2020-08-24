@@ -80,7 +80,7 @@ public class FormatEvaluation {
 		if (passed) {
 			Long ok = testResult.getFormatOK();
 			ok++;
-			testResult.setFormatKO(ok);
+			testResult.setFormatOK(ok);
 		} else {
 			Long ko = testResult.getFormatKO();
 			ko++;

@@ -32,7 +32,7 @@ public class TimeEvaluation {
 		return evaluateResultTimes(testResult, result, tt, pt);
 	}
 
-	private ArrayList<Result> evaluateResultTimes( TestResult testResult, Result result, Times tt, Times pt) {
+	private ArrayList<Result> evaluateResultTimes(TestResult testResult, Result result, Times tt, Times pt) {
 		ArrayList<Result> updatedtTimes = new ArrayList<>();
 		ExpectedPerformaceResults exRS = testResult.getMainRequestStepModel().getExpectedPerformaceResults();
 		List<TimeSuccessKind> timeSuccessKinds = exRS.getTimeSuccessKind();
@@ -54,14 +54,19 @@ public class TimeEvaluation {
 
 		boolean passed = totalPassed && parallPassed && singlePassed;
 
-		if (!needTestEvaluated && !needParallEvaluated) {
+		if (evaluated(tt, needTestEvaluated) && evaluated(pt, needParallEvaluated)) {
 			updateTimesPassed(testResult, passed);
 			result.getEvaluation().setTimePassed(passed);
+			updatedtTimes.add(result);
 		}
 		result.getDifferences().setRequestResponseDiff(singleDiff);
-		evaluateDiffereces(needTestEvaluated, passed, pt, this::parallDiffSetter, testResult,result,updatedtTimes);
-		evaluateDiffereces(false, passed, tt, this::totallDiffSetter, testResult,result, updatedtTimes);
+		evaluateDiffereces(needTestEvaluated, passed, pt, this::parallDiffSetter, testResult, result, updatedtTimes);
+		evaluateDiffereces(false, passed, tt, this::totallDiffSetter, testResult, result, updatedtTimes);
 		return updatedtTimes;
+	}
+
+	private boolean evaluated(Times tt, boolean needTestEvaluated) {
+		return !needTestEvaluated || checkEval(tt);
 	}
 
 	private void evaluateDiffereces(Boolean needMoreEval, Boolean passed, Times t, DiffSetter diffSetter,
@@ -74,10 +79,8 @@ public class TimeEvaluation {
 				Dates rd = r.getDates();
 				Long requestParallDiff = timeDif(rd.getRequestDate(), t.getMaxResponseDate());
 				diffSetter.setDiff(rd, t.getMaxResponseDate(), diff, timeDiff, requestParallDiff);
-				if(!r.equals(result)) {
-					updatedtTimes.add(r);
-				}
-				if (!needMoreEval && !r.equals(result)) {
+				updatedtTimes.add(r);				
+				if (!needMoreEval && !updatedtTimes.contains(result)) {
 					updateTimesPassed(testResult, passed);
 					r.getEvaluation().setTimePassed(passed);
 				}
@@ -113,7 +116,6 @@ public class TimeEvaluation {
 		Date minRequestDate = t.getMinRequestDate();
 		t.setMinRequestDate(min(requestDate, minRequestDate));
 		t.setMaxResponseDate(max(responseDate, maxResponseDate));
-
 	}
 
 	public void updateTimesPassed(TestResult testResult, boolean passed) {
@@ -137,8 +139,7 @@ public class TimeEvaluation {
 	}
 
 	private boolean timePassed(Long expected, Times t) {
-		return t.getExtectedResponses().equals((long) t.getTotalResult().size()) && t.getMinRequestDate() == null
-				? false
+		return checkEval(t) && t.getMinRequestDate() == null ? false
 				: testTimePassed(timeDif(t.getMinRequestDate(), t.getMaxResponseDate()), expected);
 	}
 
