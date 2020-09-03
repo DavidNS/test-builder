@@ -101,7 +101,7 @@ public class TestExecution implements Runnable {
 		Long parallelRequest = sc.getNumberOfParallelRequest();
 		Long repetitions = sc.getNumberOfTest();
 		Long requestDelay = sc.getDelayBetweenParallelRequest();
-		Long parallelDelay = sc.getDelayBetweenParallelRequest();
+		Long parallelDelay = sc.getDelayBetweenParallelTest();
 		Times tt = newTimes(parallelRequest*repetitions);
 		for (long i = 0; i < repetitions; i++) {
 			Times pt = newTimes(parallelRequest);
