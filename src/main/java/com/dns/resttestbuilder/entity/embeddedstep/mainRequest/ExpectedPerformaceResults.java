@@ -3,12 +3,10 @@ package com.dns.resttestbuilder.entity.embeddedstep.mainRequest;
 import java.util.List;
 
 import javax.persistence.Convert;
-import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
