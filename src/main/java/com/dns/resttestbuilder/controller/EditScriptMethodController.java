@@ -9,8 +9,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dns.resttestbuilder.model.data.EditScript;
 import com.dns.resttestbuilder.model.execution.steps.EditScripts;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @RestController
 @RequestMapping(path="/editMethods")
@@ -19,10 +22,6 @@ public class EditScriptMethodController {
 	@GetMapping
 	List<EditScript> getAll(@PathVariable Long userID) {
 		Method[] methods = EditScripts.class.getMethods();
-		return transform(methods);
-	}
-
-	private List<EditScript> transform(Method[] methods) {
 		List<EditScript> methodsResult= new ArrayList<>();
 		for (Method method : methods) {
 			String methodName= method.getName();
@@ -31,5 +30,14 @@ public class EditScriptMethodController {
 			
 		}
 		return methodsResult;
+	}
+	
+	@Data
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public class EditScript {
+		String methodName;
+		int paramsNumber;
+		
 	}
 }
