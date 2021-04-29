@@ -1,6 +1,6 @@
 package com.dns.resttestbuilder.exception;
 
-import com.dns.resttestbuilder.entity.Step;
+import com.dns.resttestbuilder.steps.Step;
 
 public class NotValidKeyArrayException extends RuntimeException {
 
