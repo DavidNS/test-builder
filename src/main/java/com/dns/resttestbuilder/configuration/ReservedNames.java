@@ -12,6 +12,8 @@ import lombok.Data;
 @ConfigurationProperties(prefix = "reserved-names")
 public class ReservedNames {
 
+	private static final String SEPARATOR = "\\d+";
+
 	private String arrayBeginIdentifier;
 
 	private String arrayEndIdentifier;
@@ -34,11 +36,11 @@ public class ReservedNames {
 
 	
 	public String getStepInRegexp() {
-		return stepIdentifier + "\\d+" + identifierSeparator + inputIdentifier + "\\d+";
+		return stepIdentifier + SEPARATOR + identifierSeparator + inputIdentifier + SEPARATOR;
 	}
 	
 	public String getStepOutRegex() {
-		return stepIdentifier + "\\d+" + identifierSeparator + outputIdentifier;
+		return stepIdentifier + SEPARATOR + identifierSeparator + outputIdentifier;
 	}
 
 

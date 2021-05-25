@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,11 +15,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @RestController
-@RequestMapping(path="/editMethods")
+@RequestMapping(path="/editmethods")
 public class EditScriptMethodController {
 
 	@GetMapping
-	List<EditScript> getAll(@PathVariable Long userID) {
+	List<EditScript> getAll() {
 		Method[] methods = EditScripts.class.getMethods();
 		List<EditScript> methodsResult= new ArrayList<>();
 		for (Method method : methods) {

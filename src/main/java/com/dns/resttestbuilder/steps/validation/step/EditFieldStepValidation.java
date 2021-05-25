@@ -58,6 +58,7 @@ public class EditFieldStepValidation extends AStepValidation<EditFieldStepModel>
 		}
 	}
 
+	//TODO : -> Remove inherit methods
 	public void handleValidMethds(Collection<String> values, Step step) {
 		Method[] methods = EditScripts.class.getMethods();
 		HashMap<String, Integer> publicStringMethodNames = removeNotValidMethods(methods);
