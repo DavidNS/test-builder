@@ -12,14 +12,36 @@ API wich allows execute parallel REST request and gives stress test results.
 # Google credentials
 
 1. Create account or login into https://console.cloud.google.com/
-2. Create OAuth credentials.
-3. Store client-id and client-secret for okta.
+<details>
+  <summary>2. Create OAuth credentials</summary>
+  
+  ![OAuth Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/images/GOOGLE_CREDENTIALS_1.png)
+  ![OAuth Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/images/GOOGLE_CREDENTIALS_2.png)
+</details>
+<details>
+  <summary>3. Store client-id and client-secret for okta</summary>
+  
+  ![OAuth Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/images/GOOGLE_CREDENTIALS_3.png)
+</details>
+
 
 # OKTA configuration
 
 1. Create account or login into https://developer.okta.com/signup/
-2. Create OAuth2 service.
-3. Link OKTA with google OAuth credentials.
+
+<details>
+  <summary>2. Create OAuth2 service. Allow postman as your client</summary>
+  
+  ![OAuth Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/images/OKTA_1.png)
+  ![OAuth Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/images/OKTA_2.png)
+  ![OAuth Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/images/OKTA_3.png)
+</details>
+<details>
+  <summary>3. Link OKTA with google OAuth credentials. Use client-id and client-secret form Google-Credentials-Step-3</summary>
+  
+  ![OAuth Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/images/OKTA_4.png)
+</details>
+
 
 # Setup application
 
@@ -31,7 +53,7 @@ API wich allows execute parallel REST request and gives stress test results.
 
 ## Run on eclipse 
 
-Require install lombok. Double click on a .jar located on maven dependencies, locate your eclipse and restart.
+Require install [lombok](https://projectlombok.org/setup/eclipse). You can just run the lombok-(version).jar which shall be located on maven dependencies of the project to start the installer. Locate your eclipse and restart when instalation finishes.
 
 ## Run with docker and docker-compose.
 
