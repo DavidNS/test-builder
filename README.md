@@ -2,7 +2,7 @@
 
 API wich allows execute parallel REST request and gives stess test results.
 
-# Requirements
+# Instalation
 
 1. Google credentials.
 2. OKTA configuration.
