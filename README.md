@@ -1,6 +1,6 @@
 # Test-builder
 
-API wich allows execute parallel REST request and gives stess test results.
+API wich allows execute parallel REST request and gives stress test results.
 
 # Instalation
 
