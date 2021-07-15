@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dns.resttestbuilder.exception.NotFoundException;
-import com.dns.resttestbuilder.steps.validation.DefaultData;
+import com.dns.resttestbuilder.validation.DefaultData;
 
 import lombok.extern.slf4j.Slf4j;
 

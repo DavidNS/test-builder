@@ -1,4 +1,4 @@
-package com.dns.resttestbuilder.steps.validation;
+package com.dns.resttestbuilder.validation;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

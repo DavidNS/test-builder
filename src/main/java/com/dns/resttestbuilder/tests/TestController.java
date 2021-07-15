@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dns.resttestbuilder.projects.Project;
 import com.dns.resttestbuilder.projects.ProjectController;
-import com.dns.resttestbuilder.steps.validation.DefaultData;
 import com.dns.resttestbuilder.users.UserController;
+import com.dns.resttestbuilder.validation.DefaultData;
 
 @RestController
 @RequestMapping

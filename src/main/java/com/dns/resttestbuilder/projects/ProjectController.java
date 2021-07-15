@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dns.resttestbuilder.steps.validation.DefaultData;
 import com.dns.resttestbuilder.users.UserController;
+import com.dns.resttestbuilder.validation.DefaultData;
 import com.dns.resttestbuilder.workspaces.Workspace;
 import com.dns.resttestbuilder.workspaces.WorkspaceController;
 

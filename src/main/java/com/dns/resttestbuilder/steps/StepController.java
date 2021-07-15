@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dns.resttestbuilder.exception.MainRequestException;
 import com.dns.resttestbuilder.exception.NotValidStepOrderException;
 import com.dns.resttestbuilder.steps.validation.AStepValidation;
-import com.dns.resttestbuilder.steps.validation.DefaultData;
 import com.dns.resttestbuilder.steps.validation.step.EditFieldStepValidation;
 import com.dns.resttestbuilder.steps.validation.step.MainRequestStepValidaton;
 import com.dns.resttestbuilder.steps.validation.step.MapFieldValidation;
@@ -29,6 +28,7 @@ import com.dns.resttestbuilder.testexecutions.JsonObjectParser;
 import com.dns.resttestbuilder.tests.Test;
 import com.dns.resttestbuilder.tests.TestController;
 import com.dns.resttestbuilder.users.UserController;
+import com.dns.resttestbuilder.validation.DefaultData;
 
 @Validated
 @RestController

@@ -11,6 +11,7 @@ import com.dns.resttestbuilder.configuration.ReservedNames;
 import com.dns.resttestbuilder.exception.NotValidInFormatException;
 import com.dns.resttestbuilder.steps.Step;
 import com.dns.resttestbuilder.testexecutions.JsonObjectParser;
+import com.dns.resttestbuilder.validation.GenericValidator;
 import com.google.gson.JsonParser;
 
 

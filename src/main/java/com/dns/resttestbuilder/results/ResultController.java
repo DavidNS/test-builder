@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dns.resttestbuilder.steps.validation.DefaultData;
 import com.dns.resttestbuilder.testresults.TestResult;
+import com.dns.resttestbuilder.validation.DefaultData;
 
 @RestController
 @RequestMapping
