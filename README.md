@@ -21,10 +21,21 @@ API wich allows execute parallel REST request and gives stess test results.
 2. Create OAuth2 service.
 3. Link OKTA with google OAuth credentials.
 
-# Setup applications
+# Setup application
 
-1. Run on eclipse (Require install lombok. Double click on a .jar located on maven dependencies, locate your eclipse and restart).
-2. Run with docker and docker-compose (TODO).
+## Required environment variables
+
+- OKTA_OAUTH_ISSUER: https://YOUR_OTKA_DOMAIN/oauth2/default
+- OKTA_OAUTH_CLIENT_ID: OKTA OAuth client-id
+- OKTA_OAUTH_CLIENT_SECRET: OKTA OAuth client secret
+
+## Run on eclipse 
+
+Require install lombok. Double click on a .jar located on maven dependencies, locate your eclipse and restart.
+
+## Run with docker and docker-compose.
+
+TODO
 
 # Test with postman
 
