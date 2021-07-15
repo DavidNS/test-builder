@@ -23,9 +23,19 @@ API wich allows execute parallel REST request and gives stess test results.
 
 # Setup applications
 
-A. Run on eclipse (Require install lombok. Double click on a .jar located on maven dependencies, locate your eclipse and restart).
-B. Run with docker and docker-compose (TODO).
+1. Run on eclipse (Require install lombok. Double click on a .jar located on maven dependencies, locate your eclipse and restart).
+2. Run with docker and docker-compose (TODO).
 
 # Test with postman
 
-Install postman samples located in /postman folder
+Install in your postman collection samples located in /postman.
+
+## Required postman variables
+
+- url: Your api url `localhost:8080`
+- oauth-client-id: OKTA OAuth client-id
+- oauth-client-secret: OKTA OAuth client secret
+- oauth-auth-url: https://YOUR_OTKA_DOMAIN/oauth2/default/v1/authorize
+- oauth-token-url: https://YOUR_OTKA_DOMAIN/oauth2/default/v1/token
+
+
