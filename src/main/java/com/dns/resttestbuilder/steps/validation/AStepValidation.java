@@ -21,10 +21,6 @@ public abstract class AStepValidation<T> {
 	
 	
 	@Autowired
-	protected ReservedNames reservedNames;
-	
-	
-	@Autowired
 	protected JsonObjectParser parser;
 	
 	Class<T> classCast;
@@ -34,7 +30,7 @@ public abstract class AStepValidation<T> {
 		classCast=(Class<T>) GenericTypeResolver.resolveTypeArgument(getClass(), AStepValidation.class);
 	}
 	
-	public void handle(Long userID, Step step, HashMap<Long, Integer> stepNumberVsInJson) throws IllegalAccessException, RuntimeException {
+	public void handle(Step step, HashMap<Long, Integer> stepNumberVsInJson) throws IllegalAccessException, RuntimeException {
 		T stepRestModel=parser.objectToModel(step.getStepModel(),classCast,step::setStepModel);
 		genericValidator.validateObject(stepRestModel);
 		handle(step,stepRestModel, stepNumberVsInJson);
@@ -44,19 +40,19 @@ public abstract class AStepValidation<T> {
 
 
 	public void handleInJSON(Step step, String inJson, HashMap<Long, Integer> stepNumberVsInJson) {
-		String regexpInJSON = reservedNames.getStepInRegexp();
-		String regexpOutJSON = reservedNames.getStepOutRegex();
+		String regexpInJSON = ReservedNames.STEP_IN_REGEXP;
+		String regexpOutJSON = ReservedNames.STEP_OUT_REGEXP;
 		Pattern inPattern = Pattern.compile(regexpInJSON);
 		Pattern outPattern = Pattern.compile(regexpOutJSON);
 		Matcher matcherIn = inPattern.matcher(inJson);
 		Matcher matcherOut = outPattern.matcher(inJson);
 		Long stepOrder = step.getStepOrder();
 		if (stepOrder.longValue() > 0 && matcherIn.matches()) {
-			String[] ids = inJson.split(reservedNames.getIdentifierSeparator());
+			String[] ids = inJson.split(ReservedNames.IDENTIFIER_SEPARATOR);
 			handleStepLowerThanCurrent(step, inJson, ids, regexpInJSON);
 			handleStepInLowerThanTotal(step, inJson, ids, regexpInJSON, stepNumberVsInJson);
 		} else if (stepOrder.longValue() > 0 && matcherOut.matches()) {
-			String[] ids = inJson.split(reservedNames.getIdentifierSeparator());
+			String[] ids = inJson.split(ReservedNames.IDENTIFIER_SEPARATOR);
 			handleStepLowerThanCurrent(step, inJson, ids, regexpOutJSON);
 		} else {
 			handleJsonFormat(step, inJson, regexpInJSON, regexpOutJSON);
@@ -76,8 +72,8 @@ public abstract class AStepValidation<T> {
 
 	private void handleStepInLowerThanTotal(Step step, String inJson, String[] ids, String regexpInJSON,
 			HashMap<Long, Integer> stepNumberVsInJson) {
-		String stepID = ids[0].replaceFirst(reservedNames.getStepIdentifier(), "");
-		String inID = ids[1].replaceFirst(reservedNames.getInputIdentifier(), "");
+		String stepID = ids[0].replaceFirst(ReservedNames.STEP_IDENTIFIER, "");
+		String inID = ids[1].replaceFirst(ReservedNames.INPUT_IDENTIFIER, "");
 		Integer inIDL = Integer.parseInt(inID);
 		Integer maxID = stepNumberVsInJson.get(Long.parseLong(stepID));
 		if (maxID.intValue() <= inIDL.intValue()) {
@@ -88,7 +84,7 @@ public abstract class AStepValidation<T> {
 	}
 
 	private void handleStepLowerThanCurrent(Step step, String inJson, String[] ids, String regexpOutJSON) {
-		String stepID = ids[0].replaceFirst(reservedNames.getStepIdentifier(), "");
+		String stepID = ids[0].replaceFirst(ReservedNames.STEP_IDENTIFIER, "");
 		Long longStepID = Long.parseLong(stepID);
 		if (step.getStepOrder().longValue() <= longStepID.longValue()) {
 			throw new NotValidInFormatException(step, inJson,

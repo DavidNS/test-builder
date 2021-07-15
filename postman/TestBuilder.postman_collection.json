@@ -1,0 +1,787 @@
+{
+	"info": {
+		"_postman_id": "ff248699-9aa1-4b7c-9ecf-a6737fb6cf93",
+		"name": "TestBuilder",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "SaveOrGetUser",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{url}}/users",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Worskpaces",
+			"item": [
+				{
+					"name": "GetWorkspaces",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/workspaces",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"workspaces"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetWorkspace",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/workspaces/33",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"workspaces",
+								"33"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EditWorkspace",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"ComandoAmarilloWS\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{url}}/workspaces/2",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"workspaces",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NewWorspace",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Default22\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{url}}/workspaces",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"workspaces"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteWorkspace",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/workspaces/2",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"workspaces",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Projects",
+			"item": [
+				{
+					"name": "GetProjects",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{url}}/projects",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"projects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetProject",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/projects/33",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"projects",
+								"33"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EditProject",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"ComandoAmarilloProject\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{url}}/projects/67",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"projects",
+								"67"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NewProject",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Projeeeect\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{url}}/workspaces/1/projects",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"workspaces",
+								"1",
+								"projects"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteProject",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/workspaces/1/projects/2",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"workspaces",
+								"1",
+								"projects",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Test",
+			"item": [
+				{
+					"name": "GetTests",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/tests",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetTest",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/tests/15",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tests",
+								"15"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EditTest",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"ComandoAmarilloProject\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{url}}/tests/4",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tests",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NewTest",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Teeeest\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{url}}/projects/2/tests",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"projects",
+								"2",
+								"tests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteTest",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/users/1/projects/3/tests/4",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"1",
+								"projects",
+								"3",
+								"tests",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Steps",
+			"item": [
+				{
+					"name": "UpdateSteps",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"name\": \"EditFieldStep\",\r\n        \"stepOrder\": 0,\r\n        \"stepKind\": \"EDIT_FIELD\",\r\n        \"stepModel\": {\r\n            \"inJson\": \"{\\\"name\\\":\\\"pj1\\\"}\",\r\n            \"plainKeyVsMehtod\": {\r\n                \"name\": \"getNewDNINumber\"\r\n            }\r\n        }\r\n    },\r\n    {\r\n        \"name\": \"MapFieldStep\",\r\n        \"stepOrder\": 1,\r\n        \"stepKind\": \"MAP_FIELD\",\r\n        \"stepModel\": {\r\n            \"inJsons\": [\r\n                \"{\\\"name\\\":\\\"pj1\\\"}\",\r\n                \"STEP_0.OUT\"\r\n            ],\r\n            \"outJson\": {\r\n                \"mergedName\": \"IN_0.name/AND/SOMESEPARATOR/AND/IN_1.name\"\r\n            }\r\n        }\r\n    },\r\n    {\r\n        \"name\": \"MainRequestStep\",\r\n        \"stepOrder\": 2,\r\n        \"stepKind\": \"SEND_MAIN_REQUEST\",\r\n        \"stepModel\": {\r\n            \"requestStepModel\": {\r\n                \"url\": \"http://localhost:8080/<<requestParam>>\",\r\n                \"urlParamKeyVSCombination\": {\r\n                    \"requestParam\": \"STEP_0.OUT.name\"\r\n                },\r\n                \"method\": \"GET\",\r\n                \"inJson\": \"STEP_1.OUT\"\r\n            },\r\n            \"stressConditions\": {\r\n                \"numberOfParallelRequest\": 5,\r\n                \"delayBetweenParallelRequest\": 0,\r\n                \"numberOfTest\": 1,\r\n                \"delayBetweenParallelTest\": 3000\r\n            },\r\n            \"expectedPerformaceResults\": {\r\n                \"expectedSingleTime\": 3000,\r\n                \"expectedPararellTime\": 3000,\r\n                \"expectedTotalTime\": 3000,\r\n                \"forceTimeoutByMaxExpectedTime\": false,\r\n                \"responseSuccessKind\": \"AS_EXPECTED\",\r\n                \"expectedHttpStatus\": 200,\r\n                \"output\": \"Holaaaaaaaaaaaaaaaaaaaaa\"\r\n            }\r\n        }\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{url}}/tests/3/steps",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tests",
+								"3",
+								"steps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetSteps",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/users/1/steps",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"1",
+								"steps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetStep",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/users/1/steps/24",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"1",
+								"steps",
+								"24"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TestExecution",
+			"item": [
+				{
+					"name": "ExecuteTest",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/tests/3/execute",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"tests",
+								"3",
+								"execute"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TestResult",
+			"item": [
+				{
+					"name": "GetTestsResults",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/testresults",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"testresults"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetTestsResult",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/testresults/7",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"testresults",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteTestResult",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/users/1/tests/4/testresults/184",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"1",
+								"tests",
+								"4",
+								"testresults",
+								"184"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Result",
+			"item": [
+				{
+					"name": "GetResults",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/results",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"results"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetResult",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/users/1/results/33",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"1",
+								"results",
+								"33"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteTestResult Copy",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/users/1/testresults/3/results/4",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"1",
+								"testresults",
+								"3",
+								"results",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "EditScriptMethods",
+			"item": [
+				{
+					"name": "GetEditScriptMethods",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{url}}/editmethods",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"editmethods"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Root",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{url}}/",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "accessTokenUrl",
+				"value": "{{oauth-token-url}}",
+				"type": "string"
+			},
+			{
+				"key": "authUrl",
+				"value": "{{oauth-auth-url}}",
+				"type": "string"
+			},
+			{
+				"key": "useBrowser",
+				"value": true,
+				"type": "boolean"
+			},
+			{
+				"key": "redirect_uri",
+				"value": "http://localhost",
+				"type": "string"
+			},
+			{
+				"key": "challengeAlgorithm",
+				"value": "S256",
+				"type": "string"
+			},
+			{
+				"key": "clientSecret",
+				"value": "{{oauth-client-secret}}",
+				"type": "string"
+			},
+			{
+				"key": "scope",
+				"value": "openid",
+				"type": "string"
+			},
+			{
+				"key": "client_authentication",
+				"value": "body",
+				"type": "string"
+			},
+			{
+				"key": "state",
+				"value": "something",
+				"type": "string"
+			},
+			{
+				"key": "grant_type",
+				"value": "authorization_code_with_pkce",
+				"type": "string"
+			},
+			{
+				"key": "clientId",
+				"value": "{{oauth-client-id}}",
+				"type": "string"
+			},
+			{
+				"key": "tokenType",
+				"value": "",
+				"type": "string"
+			},
+			{
+				"key": "accessToken",
+				"value": "",
+				"type": "string"
+			},
+			{
+				"key": "tokenName",
+				"value": "TestBuilderToken",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

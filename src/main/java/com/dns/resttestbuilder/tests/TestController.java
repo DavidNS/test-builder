@@ -1,5 +1,6 @@
 package com.dns.resttestbuilder.tests;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ import com.dns.resttestbuilder.steps.validation.DefaultData;
 import com.dns.resttestbuilder.users.UserController;
 
 @RestController
-@RequestMapping(path="/users/{userID}")
+@RequestMapping
 public class TestController {
 	
 	@Autowired
@@ -37,43 +38,44 @@ public class TestController {
 	
 
 	@GetMapping("/tests")
-	List<Test> getAll(@PathVariable Long userID) {
-		return repository.findByUserID(userID);
+	List<Test> getAll(Principal principal) {
+		return repository.findByUserID(principal.getName());
 	}
 	
 	@GetMapping("/tests/{id}")
-	public Test getOrThrow(@PathVariable Long userID,@PathVariable Long id)  {
+	public Test getOrThrow(Principal principal,@PathVariable Long id)  {
 		return repository.findById(id).map((pj)->{
-			defaultData.handleNotValidUserID(Test.class, id, pj.getUserID(), userID);
+			defaultData.handleNotValidUserID(Test.class, id, pj.getUserID(), principal.getName());
 			return pj;
 		}).orElseThrow(defaultData.getNotFoundSupplier(Test.class, id));
 	}
 	
 	@PutMapping("/tests/{id}")
-	Test replace(@PathVariable Long userID, @PathVariable Long id, @RequestBody Test test)  {
+	Test replace(Principal principal, @PathVariable Long id, @RequestBody Test test)  {
 		return repository.findById(id).map(pj -> {
-			return repository.save(handle(userID,pj,test));
+			return repository.save(handle(principal,pj,test));
 		}).orElseThrow(defaultData.getNotFoundSupplier(Test.class, id));
 	}
 	
 	@PostMapping("/projects/{projectID}/tests")
-	Test newItem(@PathVariable Long userID, @PathVariable Long projectID,@RequestBody Test test)  {
-		Project project=projectController.getOrThrow(userID,projectID);
-		test=repository.save(handle(userID, new Test(), test));
+	Test newItem(Principal principal, @PathVariable Long projectID,@RequestBody Test test)  {
+		Project project=projectController.getOrThrow(principal,projectID);
+		test=repository.save(handle(principal, new Test(), test));
 		project.getTests().add(test);
 		projectController.saveFull(project);
 		return test;
 	}
 	
 	@DeleteMapping("/projects/{projectID}/tests/{id}")
-	void delete(@PathVariable Long userID,@PathVariable Long projectID,@PathVariable Long id) {
-		Project project=projectController.getOrThrow(userID, projectID);
+	void delete(Principal principal,@PathVariable Long projectID,@PathVariable Long id) {
+		Project project=projectController.getOrThrow(principal, projectID);
 		project.getTests().removeIf((t)->{return t.getId().equals(id);});
 		projectController.saveFull(project);
 	}
 
 	
-	public Test handle(Long userID, Test dataToSave, Test newData)  {
+	public Test handle(Principal principal, Test dataToSave, Test newData)  {
+		String userID=principal.getName();
 		defaultData.handleCreatingObjectBeforeCreatingUser(userID);
 		defaultData.handleNotValidUserID(Test.class, dataToSave.getId(), dataToSave.getUserID(), userID);
 		

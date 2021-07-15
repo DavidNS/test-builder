@@ -1,5 +1,6 @@
 package com.dns.resttestbuilder.steps;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +32,7 @@ import com.dns.resttestbuilder.users.UserController;
 
 @Validated
 @RestController
-@RequestMapping(path = "/users/{userID}")
+@RequestMapping
 public class StepController {
 
 	@Autowired
@@ -65,24 +66,24 @@ public class StepController {
 	}
 
 	@GetMapping("/steps")
-	List<Step> getAll(@PathVariable Long userID) {
-		return repository.findByUserID(userID);
+	List<Step> getAll(Principal principal) {
+		return repository.findByUserID(principal.getName());
 	}
 
 	@GetMapping("/steps/{id}")
-	Step getOrThrow(@PathVariable Long userID, @PathVariable Long id) {
+	Step getOrThrow(Principal principal, @PathVariable Long id) {
 		return repository.findById(id).map((s) -> {
-			defaultData.handleNotValidUserID(Step.class, id, s.getUserID(), userID);
+			defaultData.handleNotValidUserID(Step.class, id, s.getUserID(), principal.getName());
 			return s;
 		}).orElseThrow(defaultData.getNotFoundSupplier(Step.class, id));
 	}
 
 	@PostMapping("/tests/{testID}/steps")
-	List<Step> newItem(@PathVariable Long userID, @PathVariable Long testID,
+	List<Step> newItem(Principal principal, @PathVariable Long testID,
 			@RequestBody @NotEmpty(message = "Input movie list cannot be empty.") List<com.dns.resttestbuilder.steps.Step> steps)
 			throws IllegalArgumentException, IllegalAccessException {
-		Test test = testController.getOrThrow(userID, testID);
-		steps=handle(userID, steps);
+		Test test = testController.getOrThrow(principal, testID);
+		steps=handle(principal, steps);
 		steps = saveSteps(steps);
 		test.getSteps().clear();
 		test.getSteps().addAll(steps);
@@ -98,7 +99,8 @@ public class StepController {
 		return stepsSaved;
 	}
 
-	public List<Step> handle(Long userID, List<Step> steps) throws IllegalArgumentException, IllegalAccessException {
+	public List<Step> handle(Principal principal, List<Step> steps) throws IllegalArgumentException, IllegalAccessException {
+		String userID=principal.getName();
 		defaultData.handleCreatingObjectBeforeCreatingUser(userID);
 		steps.sort((one, two) -> {
 			return one.getStepOrder().intValue() - two.getStepOrder().intValue();
@@ -109,10 +111,10 @@ public class StepController {
 		List<Step> mainRequestSteps = new ArrayList<>();
 		for (int i = 0; i < steps.size(); i++) {
 			Step step =newStep(userID,steps.get(i));
-			step.setId(userID);
+			step.setUserID(userID);
 			collectMainRequest(steps, mainRequestSteps, i);
 			prev = checkOrder(step, prev);
-			stepKindVSHandleStep.get(step.getStepKind()).handle(userID, step, stepNumberVsInJson);
+			stepKindVSHandleStep.get(step.getStepKind()).handle(step, stepNumberVsInJson);
 			stepsToReturn.add(step);
 		}
 		if (mainRequestSteps.size() < 1) {
@@ -125,7 +127,7 @@ public class StepController {
 
 	}
 
-	private Step newStep(Long userID, Step step) {
+	private Step newStep(String userID, Step step) {
 		return new Step(null,userID,step.getName(),step.getStepOrder(),step.getStepKind(),step.getStepModel());
 	}
 

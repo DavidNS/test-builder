@@ -25,7 +25,7 @@ public class Result {
 	@GeneratedValue
 	Long id;
 	
-	Long userID;
+	String userID;
 	
 	@Embedded
 	Meta meta=new Meta();

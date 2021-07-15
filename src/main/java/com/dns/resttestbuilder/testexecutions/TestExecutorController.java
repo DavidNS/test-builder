@@ -1,5 +1,6 @@
 package com.dns.resttestbuilder.testexecutions;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,7 +28,7 @@ import com.dns.resttestbuilder.tests.Test;
 import com.dns.resttestbuilder.tests.TestController;
 
 @RestController
-@RequestMapping(path = "/users/{userID}")
+@RequestMapping
 public class TestExecutorController {
 
 	@Autowired
@@ -55,9 +56,9 @@ public class TestExecutorController {
 	ConfigurableApplicationContext context;
 
 	@GetMapping("/tests/{testID}/execute")
-	TestResult executeTest(@PathVariable Long userID, @PathVariable Long testID) {
-		Test t = testController.getOrThrow(userID, testID);
-		TestResult tr = createTestResult(t, userID);
+	TestResult executeTest(Principal principal, @PathVariable Long testID) {
+		Test t = testController.getOrThrow(principal, testID);
+		TestResult tr = createTestResult(t, principal);
 		t.getTestResults().add(tr);
 		testResultController.saveFull(tr);
 		testController.saveFull(t);
@@ -78,13 +79,13 @@ public class TestExecutorController {
 		resultController.saveAllFull(updatedTimes);
 	}
 
-	private TestResult createTestResult(Test test, Long userID) {
+	private TestResult createTestResult(Test test, Principal principal) {
 		TestResult tr = new TestResult();
 		List<Step> steps = test.getSteps();
 		sortByOrderNumber(steps);
 		MainRequestStepModel mainRequestStepModel = getMainRequestStepModel(steps);
 		tr.setMainRequestStepModel(mainRequestStepModel);
-		tr.setUserID(userID);
+		tr.setUserID(principal.getName());
 		tr.setResults(new ArrayList<>());
 		return tr;
 	}

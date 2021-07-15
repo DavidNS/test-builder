@@ -23,9 +23,6 @@ import com.google.gson.JsonPrimitive;
 public class EditFieldStep {
 
 	@Autowired
-	ReservedNames reservedNames;
-
-	@Autowired
 	ReservedNamesParser reservedNamesParser;
 	
 	@Autowired
@@ -68,7 +65,7 @@ public class EditFieldStep {
 			JsonElement children=rootModel;
 			String plainKeyField = plainKeyVsMethod.getKey();
 			String methodName = plainKeyVsMethod.getValue();
-			String[] idElements = plainKeyField.split(reservedNames.getIdentifierSeparator());
+			String[] idElements = plainKeyField.split(ReservedNames.IDENTIFIER_SEPARATOR);
 			iterateOverElements(idElements, methodName, children);
 		}
 	}
@@ -88,8 +85,8 @@ public class EditFieldStep {
 		if (children.isJsonObject()) {
 			updateValueJson(methodName, children, idElement);
 		} else {
-			String arrayIndex = idElement.substring(idElement.indexOf(reservedNames.getArrayBeginIdentifier(),
-					idElement.indexOf(reservedNames.getArrayEndIdentifier())));
+			String arrayIndex = idElement.substring(idElement.indexOf(ReservedNames.ARRAY_BEGIN_IDENTIFIER,
+					idElement.indexOf(ReservedNames.ARRAY_END_IDENTIFIER)));
 			updateValueJsonAray(methodName, children, arrayIndex);
 		}
 	}
@@ -116,7 +113,7 @@ public class EditFieldStep {
 			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		ArrayList<String> methodParams=new ArrayList<>();
 		ArrayList<Class<String>> cl=new ArrayList<>();
-		String[] methodIDs=method.split(reservedNames.getIdentifierSeparator());
+		String[] methodIDs=method.split(ReservedNames.IDENTIFIER_SEPARATOR);
 		String methodName=methodIDs[0];
 		methodParams.add(modelValue);
 		cl.add(String.class);

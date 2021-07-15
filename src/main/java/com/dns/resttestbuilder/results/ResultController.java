@@ -1,6 +1,8 @@
 package com.dns.resttestbuilder.results;
 
+import java.security.Principal;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,31 +14,36 @@ import com.dns.resttestbuilder.steps.validation.DefaultData;
 import com.dns.resttestbuilder.testresults.TestResult;
 
 @RestController
-@RequestMapping(path = "/users/{userID}")
+@RequestMapping
 public class ResultController {
 
 	@Autowired
-	ResultRepository resultRepository;
+	ResultRepository repository;
 
 	@Autowired
 	DefaultData defaultData;
 	
-
+	@GetMapping("/results")
+	List<Result> getAll(Principal principal) {
+		return repository.findByUserID(principal.getName());
+	}
+	
+	
 	@GetMapping("/results/{resultID}")
-	Result getResult(@PathVariable Long userID, @PathVariable Long resultID) {
-		Result result = resultRepository.findById(resultID).map((r) -> {
-			defaultData.handleNotValidUserID(TestResult.class, resultID, r.getUserID(), userID);
+	Result getResult(Principal principal, @PathVariable Long resultID) {
+		Result result = repository.findById(resultID).map((r) -> {
+			defaultData.handleNotValidUserID(TestResult.class, resultID, r.getUserID(), principal.getName());
 			return r;
 		}).orElseThrow(defaultData.getNotFoundSupplier(TestResult.class, resultID));
 		return result;
 	}
 
 	public Result saveFull(Result result) {
-		return resultRepository.save(result);
+		return repository.save(result);
 	}
 
 	public void saveAllFull(ArrayList<Result> rs) {
-		resultRepository.saveAll(rs);
+		repository.saveAll(rs);
 		
 	}
 

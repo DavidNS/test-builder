@@ -16,6 +16,14 @@ async-configuration:
   execution-stress-pool-size: 100
   execution-stress-max-queue: 10000
   keep-alive-execution-stress: 30
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include:
+        - "*"
 spring:
   datasource:
     # H2 database config for dev only purposes

@@ -1,5 +1,6 @@
 package com.dns.resttestbuilder.projects;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ import com.dns.resttestbuilder.workspaces.Workspace;
 import com.dns.resttestbuilder.workspaces.WorkspaceController;
 
 @RestController
-@RequestMapping(path="/users/{userID}")
+@RequestMapping
 public class ProjectController {
 
 	@Autowired
@@ -40,43 +41,44 @@ public class ProjectController {
 	}
 
 	@GetMapping("/projects")
-	List<Project> getAll(@PathVariable Long userID) {
-		return repository.findByUserID(userID);
+	List<Project> getAll(Principal principal) {
+		return repository.findByUserID(principal.getName());
 	}
 	
 	@GetMapping("/projects/{id}")
-	public Project getOrThrow(@PathVariable Long userID,@PathVariable Long id)  {
+	public Project getOrThrow(Principal principal,@PathVariable Long id)  {
 		return repository.findById(id).map((pj)->{
-			defaultData.handleNotValidUserID(Project.class, id, pj.getUserID(), userID);
+			defaultData.handleNotValidUserID(Project.class, id, pj.getUserID(), principal.getName());
 			return pj;
 		}).orElseThrow(defaultData.getNotFoundSupplier(Project.class, id));
 	}
 	
 	@PutMapping("/projects/{id}")
-	Project replace(@PathVariable Long userID, @PathVariable Long id, @RequestBody Project project) {
+	Project replace(Principal principal, @PathVariable Long id, @RequestBody Project project) {
 		return repository.findById(id).map(pj -> {
-			return repository.save(handle(userID,pj,project));
+			return repository.save(handle(principal,pj,project));
 		}).orElseThrow(defaultData.getNotFoundSupplier(Project.class, id));
 	}
 	
 	@PostMapping("/workspaces/{workspaceID}/projects")
-	Project newItem(@PathVariable Long userID, @PathVariable Long workspaceID,@RequestBody Project project) {
-		Workspace workspace=workspaceController.getOrThrow(userID,workspaceID);
-		project=repository.save(handle(userID, new Project(), project));
+	Project newItem(Principal principal, @PathVariable Long workspaceID,@RequestBody Project project) {
+		Workspace workspace=workspaceController.getOrThrow(principal,workspaceID);
+		project=repository.save(handle(principal, new Project(), project));
 		workspace.getProjects().add(project);
 		workspaceController.saveFull(workspace);
 		return project;
 	}
 	
 	@DeleteMapping("/workspaces/{workspaceID}/projects/{id}")
-	void delete(@PathVariable Long userID,@PathVariable Long workspaceID,@PathVariable Long id)  {
-		Workspace wk=workspaceController.getOrThrow(userID, workspaceID);
+	void delete(Principal principal,@PathVariable Long workspaceID,@PathVariable Long id)  {
+		Workspace wk=workspaceController.getOrThrow(principal, workspaceID);
 		wk.getProjects().removeIf((pj)->{return pj.getId().equals(id);});
 		workspaceController.saveFull(wk);
 	}
 
 	
-	public Project handle(Long userID, Project dataToSave, Project newData) {
+	public Project handle(Principal principal, Project dataToSave, Project newData) {
+		String userID=principal.getName();
 		defaultData.handleCreatingObjectBeforeCreatingUser(userID);
 		defaultData.handleNotValidUserID(Project.class, dataToSave.getId(), dataToSave.getUserID(), userID);
 		

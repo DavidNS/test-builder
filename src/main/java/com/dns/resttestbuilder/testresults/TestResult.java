@@ -27,7 +27,7 @@ public class TestResult {
 	@GeneratedValue
 	Long id;
 	
-	Long userID;
+	String userID;
 
 	@Embedded
 	MainRequestStepModel mainRequestStepModel;

@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.dns.resttestbuilder.configuration.ReservedNames;
@@ -22,10 +21,6 @@ import com.dns.resttestbuilder.testexecutions.execution.steps.EditScripts;
 
 @Component
 public class EditFieldStepValidation extends AStepValidation<EditFieldStepModel>{
-
-
-	@Autowired
-	ReservedNames reservedNames;
 	
 	@Override
 	protected void handle(Step step, EditFieldStepModel editFieldStepModel, HashMap<Long, Integer> stepNumberVsInJson) {
@@ -39,11 +34,11 @@ public class EditFieldStepValidation extends AStepValidation<EditFieldStepModel>
 	
 	private void handleValidKeyFormat(Collection<String> set, Step step) {
 		for (var entries : set) {
-			String[] keyArrays = entries.split(reservedNames.getIdentifierSeparator());
+			String[] keyArrays = entries.split(ReservedNames.IDENTIFIER_SEPARATOR);
 			for (String keyArray : keyArrays) {
-				if (keyArray.contains(reservedNames.getIdentifierSeparator())) {
-					String arrayIndex = keyArray.substring(keyArray.indexOf(reservedNames.getArrayBeginIdentifier(),
-							keyArray.indexOf(reservedNames.getArrayEndIdentifier())));
+				if (keyArray.contains(ReservedNames.IDENTIFIER_SEPARATOR)) {
+					String arrayIndex = keyArray.substring(keyArray.indexOf(ReservedNames.ARRAY_BEGIN_IDENTIFIER,
+							keyArray.indexOf(ReservedNames.ARRAY_END_IDENTIFIER)));
 					handleArrayNumber(step, entries, keyArray, arrayIndex);
 				}
 			}
@@ -63,7 +58,7 @@ public class EditFieldStepValidation extends AStepValidation<EditFieldStepModel>
 		Method[] methods = EditScripts.class.getMethods();
 		HashMap<String, Integer> publicStringMethodNames = removeNotValidMethods(methods);
 		for (String methodComb : values) {
-			String[] ids = methodComb.split(reservedNames.getIdentifierSeparator());
+			String[] ids = methodComb.split(ReservedNames.IDENTIFIER_SEPARATOR);
 			int paramComb = ids.length - 1;
 			String methodName = ids[0];
 			Integer params = publicStringMethodNames.get(methodName);

@@ -25,7 +25,7 @@ public class Workspace {
 	@GeneratedValue
 	Long id;
 	
-	Long userID;
+	String userID;
 
 	String name;
 

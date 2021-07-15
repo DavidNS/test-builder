@@ -25,9 +25,6 @@ import com.squareup.okhttp.RequestBody;
 public class RestClient {
 
 	@Autowired
-	ReservedNames reservedNames;
-
-	@Autowired
 	ReservedNamesParser reservedNamesParser;
 
 	private static final String MEDIA_TYPE = "application/json;charset=" + StandardCharsets.UTF_8.displayName();
@@ -100,10 +97,10 @@ public class RestClient {
 
 
 	public String[] generateEnpointParamSplit(String url) {
-		String[] split1 = url.split(reservedNames.getUrlBeginParam());
+		String[] split1 = url.split(ReservedNames.URL_BEGIN_PARAM);
 		ArrayList<String> enpointSplits = new ArrayList<>();
 		for (String beginSplit : split1) {
-			String[] totalSplit = beginSplit.split(reservedNames.getUrlEndParam());
+			String[] totalSplit = beginSplit.split(ReservedNames.URL_END_PARAM);
 			enpointSplits.addAll(Arrays.asList(totalSplit));
 		}
 		return enpointSplits.toArray(String[]::new);

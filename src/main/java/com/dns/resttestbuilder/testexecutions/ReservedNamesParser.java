@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.dns.resttestbuilder.configuration.ReservedNames;
@@ -17,27 +16,24 @@ import com.google.gson.JsonPrimitive;
 @Component
 public class ReservedNamesParser {
 
-	@Autowired
-	ReservedNames reservedNames;
-
 	public JsonElement getInputJsonElement(HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON,
 			HashMap<Long, String> stepNumberVSOutJSON, String inJson) {
 		JsonElement jsonElement = null;
-		String regexpInJSON = reservedNames.getStepInRegexp();
-		String regexpOutJSON = reservedNames.getStepOutRegex();
+		String regexpInJSON = ReservedNames.STEP_IN_REGEXP;
+		String regexpOutJSON = ReservedNames.STEP_OUT_REGEXP;
 		Pattern inPattern = Pattern.compile(regexpInJSON);
 		Pattern outPattern = Pattern.compile(regexpOutJSON);
 		Matcher matcherIn = inPattern.matcher(inJson);
 		Matcher matcherOut = outPattern.matcher(inJson);
 		if (matcherIn.matches()) {
-			String[] identifiers = inJson.split(reservedNames.getIdentifierSeparator());
-			String stepID = identifiers[0].replaceFirst(reservedNames.getStepIdentifier(), "");
-			String inID = identifiers[1].replaceFirst(reservedNames.getInputIdentifier(), "");
+			String[] identifiers = inJson.split(ReservedNames.IDENTIFIER_SEPARATOR);
+			String stepID = identifiers[0].replaceFirst(ReservedNames.STEP_IDENTIFIER, "");
+			String inID = identifiers[1].replaceFirst(ReservedNames.INPUT_IDENTIFIER, "");
 			jsonElement = JsonParser
 					.parseString(stepNumberVSInNumberVSInJSON.get(Long.parseLong(stepID)).get(Long.parseLong(inID)));
 		} else if (matcherOut.matches()) {
-			String[] identifiers = inJson.split(reservedNames.getIdentifierSeparator());
-			String stepID = identifiers[0].replaceFirst(reservedNames.getStepIdentifier(), "");
+			String[] identifiers = inJson.split(ReservedNames.IDENTIFIER_SEPARATOR);
+			String stepID = identifiers[0].replaceFirst(ReservedNames.STEP_IDENTIFIER, "");
 			jsonElement = JsonParser.parseString(stepNumberVSOutJSON.get(Long.parseLong(stepID)));
 		} else {
 			jsonElement = JsonParser.parseString(inJson);
@@ -50,10 +46,10 @@ public class ReservedNamesParser {
 			String arrayIndex = idElement.substring(1, idElement.length());
 			children = children.getAsJsonArray().get(Integer.parseInt(arrayIndex));
 		} else if (children.isJsonObject()) {
-			if (idElement.contains(reservedNames.getArrayBeginIdentifier())) {
-				String memberName = idElement.substring(0, idElement.indexOf(reservedNames.getArrayBeginIdentifier()));
-				String arrayIndex = idElement.substring(idElement.indexOf(reservedNames.getArrayBeginIdentifier(),
-						idElement.indexOf(reservedNames.getArrayEndIdentifier())));
+			if (idElement.contains(ReservedNames.ARRAY_BEGIN_IDENTIFIER)) {
+				String memberName = idElement.substring(0, idElement.indexOf(ReservedNames.ARRAY_BEGIN_IDENTIFIER));
+				String arrayIndex = idElement.substring(idElement.indexOf(ReservedNames.ARRAY_BEGIN_IDENTIFIER,
+						idElement.indexOf(ReservedNames.ARRAY_END_IDENTIFIER)));
 				children = children.getAsJsonObject().getAsJsonArray(memberName).get(Integer.parseInt(arrayIndex));
 			} else {
 				children = children.getAsJsonObject().get(idElement);
@@ -96,10 +92,10 @@ public class ReservedNamesParser {
 	public String processCombinations(String initialCombination, HashMap<String, JsonElement> storedElements,
 			HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON,
 			HashMap<Long, String> stepNumberVSOutJSON) {
-		String[] combinations = initialCombination.split(reservedNames.getMapCombinationSeparator());
+		String[] combinations = initialCombination.split(ReservedNames.MAP_COMBINATION_SEPARATOR);
 		StringBuilder result = new StringBuilder();
 		for (String combination : combinations) {
-			String[] identifiers = combination.split(reservedNames.getIdentifierSeparator());
+			String[] identifiers = combination.split(ReservedNames.IDENTIFIER_SEPARATOR);
 			if (identifiers.length > 2) {
 				tryProcessCombination(storedElements, stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON, result, combination,
 						identifiers);
@@ -129,10 +125,10 @@ public class ReservedNamesParser {
 			String arrayIndex = idElement.substring(1, idElement.length());
 			children = children.getAsJsonArray().get(Integer.parseInt(arrayIndex)).getAsJsonPrimitive();
 		} else if (children.isJsonObject()) {
-			if (idElement.contains(reservedNames.getArrayBeginIdentifier())) {
-				String memberName = idElement.substring(0, idElement.indexOf(reservedNames.getArrayBeginIdentifier()));
-				String arrayIndex = idElement.substring(idElement.indexOf(reservedNames.getArrayBeginIdentifier(),
-						idElement.indexOf(reservedNames.getArrayEndIdentifier())));
+			if (idElement.contains(ReservedNames.ARRAY_BEGIN_IDENTIFIER)) {
+				String memberName = idElement.substring(0, idElement.indexOf(ReservedNames.ARRAY_BEGIN_IDENTIFIER));
+				String arrayIndex = idElement.substring(idElement.indexOf(ReservedNames.ARRAY_BEGIN_IDENTIFIER,
+						idElement.indexOf(ReservedNames.ARRAY_END_IDENTIFIER)));
 				children = children.getAsJsonObject().getAsJsonArray(memberName).get(Integer.parseInt(arrayIndex)).getAsJsonPrimitive();
 			}else {
 				children = children.getAsJsonObject().get(idElement).getAsJsonPrimitive();
@@ -149,7 +145,7 @@ public class ReservedNamesParser {
 		try {
 			String stepID = identifiers[0];
 			String jsonID = identifiers[1];
-			String stepAndJson = stepID + reservedNames.getIdentifierSeparatorNotEscaped() + jsonID;
+			String stepAndJson = stepID + ReservedNames.IDENTIFIER_SEPARATOR_NOT_ESCAPED + jsonID;
 			JsonElement element = storedElements.get(stepAndJson);
 			if (element == null) {
 				element = getInputJsonElement(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON,

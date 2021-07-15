@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TestRepository extends JpaRepository<Test, Long> {
 	
-	List<Test> findByUserID(Long userID);
+	List<Test> findByUserID(String userID);
 }

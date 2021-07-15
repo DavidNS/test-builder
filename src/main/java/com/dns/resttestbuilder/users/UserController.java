@@ -1,16 +1,12 @@
 package com.dns.resttestbuilder.users;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,20 +28,10 @@ public class UserController {
 	UserRepository repository;
 
 	@GetMapping
-	List<User> all() {
-		return repository.findAll();
-	}
-
-
-	// TODO: This is the currently main mapping, because there is not security added yet ->
-	@PostMapping
-	public User getOrReplaceFields(@Valid @RequestBody User user) {
-		return repository.findByName(user.getName()).stream().findFirst().map((u)->{
-			log.info("User found {}",user.getName());
-			return repository.save(handle(u, user));
-		}).orElseGet(() -> {
-			log.info("User not found {}, creating new...",user.getName());
-			return repository.save(handle(new User(), user));
+	public User getOrNew(Principal principal) {		
+		return repository.findById(principal.getName()).orElseGet(()->{
+			log.info("User not found {}, creating new...",principal.getName());
+			return repository.save(handle(new User(), principal));
 		});
 	}
 	
@@ -54,16 +40,14 @@ public class UserController {
 	}
 
 
-	public User getOrThrow(Long id) throws NotFoundException {
+	public User getOrThrow(String id) throws NotFoundException {
 		return repository.findById(id).orElseThrow(() -> new NotFoundException(User.class, id));
 	}
 	
-	public User handle(User dataToSave,User newData) {
-		dataToSave.setName(newData.getName());
-		dataToSave.setUserPreferences(newData.getUserPreferences());
+	public User handle(User dataToSave,Principal principal) {
+		dataToSave.setId(principal.getName());
 		defaultData.handleNullProperty(dataToSave::getWorkspaces, ArrayList::new, dataToSave::setWorkspaces);
 		defaultData.handleNullProperty(dataToSave::getUserPreferences, HashMap::new, dataToSave::setUserPreferences);
-		
 		return dataToSave;
 	}
 

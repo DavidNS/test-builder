@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.dns.resttestbuilder.configuration.ReservedNames;
 import com.dns.resttestbuilder.steps.Step;
 import com.dns.resttestbuilder.steps.embeddedstep.MapFieldStepModel;
 import com.dns.resttestbuilder.testexecutions.JsonObjectParser;
@@ -16,8 +15,7 @@ import com.google.gson.JsonElement;
 @Component
 public class MapFieldsStep {
 
-	@Autowired
-	ReservedNames reservedNames;
+
 
 	
 	@Autowired

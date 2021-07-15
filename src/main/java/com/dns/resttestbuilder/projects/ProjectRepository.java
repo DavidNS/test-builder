@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ProjectRepository extends JpaRepository<Project, Long> {
 
 	
-	List<Project> findByUserID(Long userID);
+	List<Project> findByUserID(String userID);
 	
 }

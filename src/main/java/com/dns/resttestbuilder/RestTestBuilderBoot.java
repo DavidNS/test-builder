@@ -7,7 +7,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 import com.dns.resttestbuilder.configuration.AsyncConfiguration;
 import com.dns.resttestbuilder.configuration.CORSConfiguration;
-import com.dns.resttestbuilder.configuration.ReservedNames;
 
 
 /**
@@ -16,7 +15,7 @@ import com.dns.resttestbuilder.configuration.ReservedNames;
  *
  */
 @SpringBootApplication
-@EnableConfigurationProperties({AsyncConfiguration.class, ReservedNames.class, CORSConfiguration.class})
+@EnableConfigurationProperties({AsyncConfiguration.class, CORSConfiguration.class})
 public class RestTestBuilderBoot {
 
 

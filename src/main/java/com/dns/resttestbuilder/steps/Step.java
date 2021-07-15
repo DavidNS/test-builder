@@ -27,7 +27,7 @@ public class Step {
 	@GeneratedValue
 	Long id;
 	
-	Long userID;
+	String userID;
 	
 	String name;
 	

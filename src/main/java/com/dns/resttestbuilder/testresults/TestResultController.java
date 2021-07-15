@@ -1,5 +1,8 @@
 package com.dns.resttestbuilder.testresults;
 
+import java.security.Principal;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +15,7 @@ import com.dns.resttestbuilder.tests.Test;
 import com.dns.resttestbuilder.tests.TestController;
 
 @RestController
-@RequestMapping(path = "/users/{userID}")
+@RequestMapping
 public class TestResultController {
 
 	@Autowired
@@ -23,12 +26,18 @@ public class TestResultController {
 	
 	
 	@Autowired
-	TestController testCntroller;
+	TestController testController;
+	
+
+	@GetMapping("/testresults")
+	List<TestResult> getAll(Principal principal) {
+		return repository.findByUserID(principal.getName());
+	}
 	
 	@GetMapping("/testresults/{testResultID}")
-	TestResult getOrTrow(@PathVariable Long userID, @PathVariable Long testResultID) {
+	TestResult getOrTrow(Principal principal, @PathVariable Long testResultID) {
 		TestResult testResult = repository.findById(testResultID).map((tr) -> {
-			defaultData.handleNotValidUserID(TestResult.class, testResultID, tr.getUserID(), userID);
+			defaultData.handleNotValidUserID(TestResult.class, testResultID, tr.getUserID(), principal.getName());
 			return tr;
 		}).orElseThrow(defaultData.getNotFoundSupplier(TestResult.class, testResultID));
 		return testResult;
@@ -37,10 +46,10 @@ public class TestResultController {
 
 	
 	@DeleteMapping("/tests/{testID}/testresults/{id}")
-	void delete(@PathVariable Long userID,@PathVariable Long testID,@PathVariable Long id) {
-		Test project=testCntroller.getOrThrow(userID, testID);
+	void delete(Principal principal,@PathVariable Long testID,@PathVariable Long id) {
+		Test project=testController.getOrThrow(principal, testID);
 		project.getTestResults().removeIf((t)->{return t.getId().equals(id);});
-		testCntroller.saveFull(project);
+		testController.saveFull(project);
 	}
 	
 	public TestResult saveFull(TestResult tr) {

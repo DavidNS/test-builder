@@ -1,48 +1,31 @@
 package com.dns.resttestbuilder.configuration;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-
-import lombok.Data;
-
-@Data
-@Configuration
-@EnableAutoConfiguration
-@ConfigurationProperties(prefix = "reserved-names")
 public class ReservedNames {
 
-	private static final String SEPARATOR = "\\d+";
-
-	private String arrayBeginIdentifier;
-
-	private String arrayEndIdentifier;
+	public static final String SEPARATOR = "\\d+";
 	
-	private String stepIdentifier;
+	public  static final String ARRAY_BEGIN_IDENTIFIER="[";
 
-	private String inputIdentifier;
+	public static final  String ARRAY_END_IDENTIFIER="]";
+	     
+	public static final String STEP_IDENTIFIER="STEP_";
 
-	private String outputIdentifier;
+	public static final String INPUT_IDENTIFIER="IN_";
 
-	private String identifierSeparator;
+	public static final String OUTPUT_IDENTIFIER="OUT";
+
+	public static final String IDENTIFIER_SEPARATOR="\\.";
+
+	public static final String IDENTIFIER_SEPARATOR_NOT_ESCAPED=".";
+
+	public static final String MAP_COMBINATION_SEPARATOR="/AND/";
+
+	public static final String URL_BEGIN_PARAM="<";
+
+	public static final String URL_END_PARAM=">";
+
+	public static final String STEP_IN_REGEXP=STEP_IDENTIFIER + SEPARATOR + IDENTIFIER_SEPARATOR + INPUT_IDENTIFIER + SEPARATOR;
 	
-	private String identifierSeparatorNotEscaped;
-
-	private String mapCombinationSeparator;
-
-	private String urlBeginParam;
-
-	private String urlEndParam;
-
-	
-	public String getStepInRegexp() {
-		return stepIdentifier + SEPARATOR + identifierSeparator + inputIdentifier + SEPARATOR;
-	}
-	
-	public String getStepOutRegex() {
-		return stepIdentifier + SEPARATOR + identifierSeparator + outputIdentifier;
-	}
-
-
+	public static final String STEP_OUT_REGEXP=STEP_IDENTIFIER+SEPARATOR+IDENTIFIER_SEPARATOR+OUTPUT_IDENTIFIER;
 
 }

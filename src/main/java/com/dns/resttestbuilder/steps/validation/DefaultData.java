@@ -21,13 +21,13 @@ public class DefaultData {
 				throws NoSuchMethodException, IllegalAccessException, InvocationTargetException;
 	}
 
-	public void handleCreatingObjectBeforeCreatingUser(Long userID) {
+	public void handleCreatingObjectBeforeCreatingUser(String userID) {
 		if (userID == null) {
 			throw new UserIDNotFoundException();
 		}
 	}
 
-	public void handleNotValidUserID(Class<?> itemClass, Long itemID, Long previousUserID, Long currentUserID) throws InvalidUserIDException {
+	public void handleNotValidUserID(Class<?> itemClass, Long itemID, String previousUserID, String currentUserID) throws InvalidUserIDException {
 		if (itemID != null && previousUserID != null && !previousUserID.equals(currentUserID)) {
 			throw new InvalidUserIDException(itemClass, itemID);
 		}
@@ -42,6 +42,10 @@ public class DefaultData {
 	}
 
 	public Supplier<? extends NotFoundException> getNotFoundSupplier(Class<?> classType, Long id) {
+		return () -> new NotFoundException(classType, String.valueOf(id));
+	}
+	
+	public Supplier<? extends NotFoundException> getNotFoundSupplier(Class<?> classType, String id) {
 		return () -> new NotFoundException(classType, id);
 	}
 

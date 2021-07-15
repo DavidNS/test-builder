@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface StepRepository extends JpaRepository<Step, Long> {
 	
-	List<Step> findByUserID(Long userID);
+	List<Step> findByUserID(String userID);
 }
