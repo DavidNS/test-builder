@@ -1,13 +1,14 @@
 # Instalation
 
-1. Google credentials.
-2. OKTA configuration.
-3. Setup the application
-4. Test with postman
+1. [Google credentials](#google-credentials).
+2. [OKTA configuration](#okta-configuration)
+3. [Setup application](#setup-application)
+4. [Test with postman](#test-with-postman)
 
 # Google credentials
 
 1. Create account or login into https://console.cloud.google.com/
+
 <details>
   <summary>2. Create OAuth credentials</summary>
   
@@ -17,7 +18,7 @@
 <details>
   <summary>3. Store client-id and client-secret for okta</summary>
   
-  ![OAuth Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/images/GOOGLE_CREDENTIALS_3.png)
+  ![OAuth Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/installation/images/GOOGLE_CREDENTIALS_3.png)
 </details>
 
 
@@ -43,13 +44,15 @@
 
 ## Required environment variables
 
-- OKTA_OAUTH_ISSUER: https://YOUR_OTKA_DOMAIN/oauth2/default
+Default values:
+
+- OKTA_OAUTH_ISSUER: `https://YOUR_OTKA_DOMAIN/oauth2/default`
 - OKTA_OAUTH_CLIENT_ID: OKTA OAuth client-id
 - OKTA_OAUTH_CLIENT_SECRET: OKTA OAuth client secret
 
 ## Run on eclipse 
 
-Require install [lombok](https://projectlombok.org/setup/eclipse). You can just run the lombok-(version).jar which shall be located on maven dependencies of the project to start the installer. Locate your eclipse and restart when instalation finishes.
+Require install [lombok](https://projectlombok.org/setup/eclipse). You can just run the lombok-(version).jar which shall be located on maven dependencies of the project to start the installer. Locate your eclipse and restart when installation finishes.
 
 ## Run with docker and docker-compose.
 
@@ -61,8 +64,10 @@ Install in your postman collection samples located in /postman.
 
 ## Required postman variables
 
-- url: Your api url `localhost:8080`
+Default values:
+
+- url: `localhost:8080`
 - oauth-client-id: OKTA OAuth client-id
 - oauth-client-secret: OKTA OAuth client secret
-- oauth-auth-url: https://YOUR_OTKA_DOMAIN/oauth2/default/v1/authorize
-- oauth-token-url: https://YOUR_OTKA_DOMAIN/oauth2/default/v1/token
+- oauth-auth-url: `https://YOUR_OTKA_DOMAIN/oauth2/default/v1/authorize`
+- oauth-token-url: `https://YOUR_OTKA_DOMAIN/oauth2/default/v1/token`
