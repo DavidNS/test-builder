@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 @RequestMapping(path="/editmethods")
 public class EditScriptMethodController {
 
+	//TODO: Remove inherit methods
 	@GetMapping
 	List<EditScript> getAll() {
 		Method[] methods = EditScripts.class.getMethods();
