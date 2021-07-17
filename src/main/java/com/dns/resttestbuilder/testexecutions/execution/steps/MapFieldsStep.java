@@ -15,37 +15,40 @@ import com.google.gson.JsonElement;
 @Component
 public class MapFieldsStep {
 
-
-
-	
 	@Autowired
 	JsonObjectParser jsonObjectParser;
-	
+
 	@Autowired
-	ReservedNamesParser jsonInParser;
+	ReservedNamesParser reservedNamesParser;
 
 	public void processStep(Step step, HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON,
 			HashMap<Long, String> stepNumberVSOutJSON) {
 		Long stepNumber = step.getStepOrder();
-		MapFieldStepModel mapFieldStepModel =  jsonObjectParser.objectToModel(step.getStepModel(), MapFieldStepModel.class,step::setStepModel) ;
-		
+		MapFieldStepModel mapFieldStepModel = jsonObjectParser.objectToModel(step.getStepModel(),
+				MapFieldStepModel.class, step::setStepModel);
+
 		List<String> inJSONsFromModel = mapFieldStepModel.getInJsons();
-		HashMap<Long, String> inNumberVSinJsons = generateInJsonNumbers(inJSONsFromModel);
+		HashMap<Long, String> inNumberVSinJsons = generateInJsons(inJSONsFromModel, stepNumberVSInNumberVSInJSON,
+				stepNumberVSOutJSON);
 		stepNumberVSInNumberVSInJSON.put(stepNumber, inNumberVSinJsons);
-		
-		JsonElement outModel= jsonObjectParser.objectToModel(mapFieldStepModel.getOutJson(), JsonElement.class,mapFieldStepModel::setOutJson) ;
-		jsonInParser.mapOutJson(outModel, new HashMap<>(),stepNumberVSInNumberVSInJSON,stepNumberVSOutJSON);
+		JsonElement outModel = jsonObjectParser.objectToModel(mapFieldStepModel.getOutJson(), JsonElement.class,
+				mapFieldStepModel::setOutJson);
+		reservedNamesParser.mapOutJson(outModel, new HashMap<>(), stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON);
 		stepNumberVSOutJSON.put(stepNumber, outModel.toString());
 	}
-	
 
-	private HashMap<Long, String> generateInJsonNumbers(List<String> inJSONsFromModel) {
+	private HashMap<Long, String> generateInJsons(List<String> inJSONsFromModel,
+			HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON,
+			HashMap<Long, String> stepNumberVSOutJSON) {
 		HashMap<Long, String> inNumberVSinJsons = new HashMap<>();
 		long i = 0;
 		for (var jsonElement : inJSONsFromModel) {
-			inNumberVSinJsons.put(i, jsonElement);
+			JsonElement element=reservedNamesParser
+					.getInputJsonElement(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON, jsonElement);
+			inNumberVSinJsons.put(i, element.toString());
 			i++;
 		}
+
 		return inNumberVSinJsons;
 	}
 }
