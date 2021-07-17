@@ -20,13 +20,13 @@
 To be able to send a request first is needed to request a token.
   
 <details>
-  <summary>Open main folder settings to see authentication sreen. Click on Get access token to start login process</summary>
+  <summary>Open main folder settings to see authentication screen. Click on get access token to start login process</summary>
 
   ![Token Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/gettingstarted/images/POSTMAN_2.png)
   
 </details>
 <details>
-  <summary>A web browser shall display a login window. Open help options and select sign in with google</summary>
+  <summary>A web browser shall display a login window. Open the help options and select sign in with google</summary>
 
   ![Token Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/gettingstarted/images/POSTMAN_OKTA_LOGIN.png)
   
@@ -48,15 +48,21 @@ To be able to send a request first is needed to request a token.
 </details>
 
 <details>
-  <summary>Create a user-workspace-project-test by sending post</summary>
+  <summary>Send update step request. This is the request which specifies your test configuration. </summary>
 
-  ![Token Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/gettingstarted/images/POSTMAN_4.png)
+  
   
 </details>
 
 <details>
-  <summary>Send update step request. This is the request which specifies your test configuration</summary>
+  <summary>Execute your test</summary>
 
-  ![Token Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/gettingstarted/images/POSTMAN_4.png)
+  
+  
+</details>
+<details>
+  <summary>Check results</summary>
+
+  
   
 </details>

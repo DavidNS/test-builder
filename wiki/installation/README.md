@@ -56,11 +56,11 @@ Require install [lombok](https://projectlombok.org/setup/eclipse). You can just 
 
 ## Run with docker and docker-compose.
 
-TODO
+Getting soon...
 
 # Test with postman
 
-Install in your postman collection samples located in /postman.
+Import the postman collection samples located in /postman.
 
 ## Required postman variables
 
