@@ -121,7 +121,8 @@ public class FormatEvaluation {
 			HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON,
 			HashMap<Long, String> stepNumberVSOutJSON) {
 		try {
-			JsonElement expected = buildResponseExpected(exRS, stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON);
+			JsonElement expected = genericParser.objectToModel(exRS.getOutput(), JsonElement.class, exRS::setOutput);
+			reservedNamesParser.mapOutJson(expected, new HashMap<>(), stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON);
 			JsonElement response = JsonParser.parseString(result.getRequestInfo().getResponse());
 			return expected.toString().equals(response.toString());
 		} catch (Exception e) {
@@ -129,16 +130,11 @@ public class FormatEvaluation {
 			if(expected.startsWith(STRING_IDENTIFIER)) {
 				expected=expected.substring(1,expected.length()-1);
 			}
+			expected=reservedNamesParser.processCombinations(expected, new HashMap<>(), stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON);
 			return expected.equals(result.getRequestInfo().getResponse());
 		}
+		
 	}
 
-	private JsonElement buildResponseExpected(ExpectedPerformaceResults exRS,
-			HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON,
-			HashMap<Long, String> stepNumberVSOutJSON) {
-		JsonElement expected = genericParser.objectToModel(exRS.getOutput(), JsonElement.class, exRS::setOutput);
-		reservedNamesParser.mapOutJson(expected, new HashMap<>(), stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON);
-		return expected;
-	}
 
 }

@@ -1,7 +1,9 @@
 package com.dns.resttestbuilder.steps.embeddedstep;
 
+import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
@@ -25,11 +27,17 @@ public class RequestStepModel {
 	@NotBlank(message = "Endpoint is required to send a request")
 	String url;
 	
-
 	@ElementCollection(fetch = FetchType.EAGER)
 	Map<String, String> urlParamKeyVSCombination;
-	
 
+	
+	@ElementCollection(fetch = FetchType.LAZY)
+	List<String> deleteHeaders;
+	
+	@ElementCollection(fetch = FetchType.EAGER)
+	@Column( length = 100000 )
+	Map<String, String> addHeaders;
+	
 	@NotNull(message = "Method is required to send a request")
 	@Enumerated(EnumType.STRING)
 	Method method;
