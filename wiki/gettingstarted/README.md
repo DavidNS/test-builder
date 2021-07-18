@@ -1,9 +1,8 @@
 # Getting started
 
-1. Postman collection
-2. Get access token
-3. Create and execute test
-4. Steps features
+1. [Postman collection](#postman-collection)
+2. [Get access token](#get-access-token)
+3. [Create and execute test](#create-and-execute-test)
 
 # Postman collection
   
