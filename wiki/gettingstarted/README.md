@@ -48,16 +48,17 @@ To be able to send a request first is needed to request a token.
 </details>
 
 <details>
-  <summary>Send update step request. This is the request which specifies your test configuration. </summary>
+  <summary>The update step request specifies your test configuration. Replace your authorization token and send the request</summary>
 
-  
+  ![Token Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/gettingstarted/images/POSTMAN_5.png)
+  ![Token Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/gettingstarted/images/POSTMAN_6.png)
   
 </details>
 
 <details>
-  <summary>Execute your test</summary>
+  <summary>Execute your test and check the results</summary>
 
-  
+  ![Token Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/gettingstarted/images/POSTMAN_7.png)
   
 </details>
 <details>
