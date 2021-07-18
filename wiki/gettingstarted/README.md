@@ -61,9 +61,3 @@ To be able to send a request first is needed to request a token.
   ![Token Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/gettingstarted/images/POSTMAN_7.png)
   
 </details>
-<details>
-  <summary>Check results</summary>
-
-  
-  
-</details>
