@@ -88,7 +88,7 @@ public class RestClient {
 	private void processCombinationEntry(Entry<String, String> entry, HashMap<String, JsonElement> storedElements,
 			Map<String, String> entryVSFinalValue, HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON,
 			HashMap<Long, String> stepNumberVSOutJSON) {
-		String combinationResult = reservedNamesParser.processCombinations(entry.getValue(), storedElements, stepNumberVSInNumberVSInJSON,
+		String combinationResult = reservedNamesParser.processMapCombinations(entry.getValue(), storedElements, stepNumberVSInNumberVSInJSON,
 				stepNumberVSOutJSON);
 		entryVSFinalValue.put( entry.getKey(), combinationResult);
 

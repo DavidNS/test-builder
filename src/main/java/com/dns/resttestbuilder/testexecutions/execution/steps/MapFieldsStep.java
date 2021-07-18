@@ -43,9 +43,7 @@ public class MapFieldsStep {
 		HashMap<Long, String> inNumberVSinJsons = new HashMap<>();
 		long i = 0;
 		for (var jsonElement : inJSONsFromModel) {
-			JsonElement element=reservedNamesParser
-					.getInputJsonElement(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON, jsonElement);
-			inNumberVSinJsons.put(i, element.toString());
+			inNumberVSinJsons.put(i,jsonElement);
 			i++;
 		}
 

@@ -74,7 +74,7 @@ public class ReservedNamesParser {
 	private void mapOutJsonObject(JsonElement parent,JsonElement children, String childrenKey,HashMap<String, JsonElement> storedElements,HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON,
 			HashMap<Long, String> stepNumberVSOutJSON) {
 		if(children.isJsonPrimitive()) {
-			String finalValue = processCombinations(children.getAsString(), storedElements, stepNumberVSInNumberVSInJSON,
+			String finalValue = processMapCombinations(children.getAsString(), storedElements, stepNumberVSInNumberVSInJSON,
 					stepNumberVSOutJSON);
 			JsonObject objectParent=parent.getAsJsonObject();
 			objectParent.remove(childrenKey);
@@ -89,19 +89,16 @@ public class ReservedNamesParser {
 		return i != elements.length - 1;
 	}
 	
-	public String processCombinations(String initialCombination, HashMap<String, JsonElement> storedElements,
+	public String processMapCombinations(String initialCombination, HashMap<String, JsonElement> storedElements,
 			HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON,
 			HashMap<Long, String> stepNumberVSOutJSON) {
 		String[] combinations = initialCombination.split(ReservedNames.MAP_COMBINATION_SEPARATOR);
 		StringBuilder result = new StringBuilder();
 		for (String combination : combinations) {
 			String[] identifiers = combination.split(ReservedNames.IDENTIFIER_SEPARATOR);
-			if (identifiers.length > 2) {
-				tryProcessCombination(storedElements, stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON, result, combination,
+			tryProcessMapCombination(storedElements, stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON, result, combination,
 						identifiers);
-			} else {
-				result.append(combination);
-			}
+			
 		}
 		return result.toString();
 	}
@@ -109,7 +106,7 @@ public class ReservedNamesParser {
 	private void mapOutJsonArray(JsonElement parent,JsonElement children ,HashMap<String, JsonElement> storedElements,HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON,
 			HashMap<Long, String> stepNumberVSOutJSON) {
 		if(children.isJsonPrimitive()) {
-			String finalValue = processCombinations(children.getAsString(), storedElements, stepNumberVSInNumberVSInJSON,
+			String finalValue = processMapCombinations(children.getAsString(), storedElements, stepNumberVSInNumberVSInJSON,
 					stepNumberVSOutJSON);
 			JsonArray arrayParent=parent.getAsJsonArray();
 			arrayParent.remove(children);
@@ -139,12 +136,13 @@ public class ReservedNamesParser {
 
 
 
-	private void tryProcessCombination(HashMap<String, JsonElement> storedElements,
+	private void tryProcessMapCombination(HashMap<String, JsonElement> storedElements,
 			HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON,
 			HashMap<Long, String> stepNumberVSOutJSON, StringBuilder result, String combination, String[] identifiers) {
 		try {
 			String stepID = identifiers[0];
 			String jsonID = identifiers[1];
+			
 			String stepAndJson = stepID + ReservedNames.IDENTIFIER_SEPARATOR_NOT_ESCAPED + jsonID;
 			JsonElement element = storedElements.get(stepAndJson);
 			if (element == null) {
@@ -152,14 +150,14 @@ public class ReservedNamesParser {
 						stepAndJson);
 				storedElements.put(stepAndJson, element);
 			}
-			String combinationResult = processCombination(element, identifiers);
+			String combinationResult = processMapCombination(element, identifiers);
 			result.append(combinationResult);
 		} catch (Exception e) {
 			result.append(combination);
 		}
 	}
 	
-	private String processCombination(JsonElement children, String[] keyTree) {
+	private String processMapCombination(JsonElement children, String[] keyTree) {
 		for (int i = 2; i < keyTree.length; i++) {
 			String key = keyTree[i];
 			if (isOtherItem(keyTree, i)) {

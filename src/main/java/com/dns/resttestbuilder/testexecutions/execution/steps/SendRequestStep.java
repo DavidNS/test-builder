@@ -47,7 +47,7 @@ public class SendRequestStep {
 				.toString();
 		HashMap<Long, String> inHash = new HashMap<>();
 		
-		inHash.put(1L, requestBody);
+		inHash.put(0L, requestBody);
 		stepNumberVSInNumberVSInJSON.put(stepNumber, inHash);
 		
 		String enpointUdpated = restClient.generateCombinedEndpoint(endpoint, paramVsCombination,

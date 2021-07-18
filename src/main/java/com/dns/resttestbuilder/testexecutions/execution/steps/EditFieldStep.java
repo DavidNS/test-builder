@@ -40,7 +40,7 @@ public class EditFieldStep {
 		JsonElement inJSON = reservedNamesParser.getInputJsonElement(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON,
 				inFromModel);
 		HashMap<Long, String> inNumberVsINJson = new HashMap<>();
-		inNumberVsINJson.put(1L, inJSON.toString());
+		inNumberVsINJson.put(0L, inJSON.toString());
 		stepNumberVSInNumberVSInJSON.put(stepNumber, inNumberVsINJson);
 		
 		JsonElement outJSON = reservedNamesParser.getInputJsonElement(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON,
