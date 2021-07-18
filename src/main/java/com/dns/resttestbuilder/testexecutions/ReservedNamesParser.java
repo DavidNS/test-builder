@@ -1,6 +1,10 @@
 package com.dns.resttestbuilder.testexecutions;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -168,5 +172,63 @@ public class ReservedNamesParser {
 
 		}
 		return children.getAsString();
+	}
+	
+	public String generateCombinedEndpoint(String endpoint, Map<String, String> paramVsCombination,
+			HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON,
+			HashMap<Long, String> stepNumberVSOutJSON) {
+		String[] totalSplit = generateEnpointParamSplit(endpoint);
+		Map<String, String> entryVSFinalValue = new HashMap<String, String>();
+		HashMap<String, JsonElement> storedElements = new HashMap<>();
+		if (paramVsCombination != null) {
+			for (var entry : paramVsCombination.entrySet()) {
+				processCombinationEntry(entry, storedElements, entryVSFinalValue, stepNumberVSInNumberVSInJSON,
+						stepNumberVSOutJSON);
+			}
+		}
+		return generateFinalUrl(totalSplit, entryVSFinalValue, endpoint);
+	}
+	
+	private void processCombinationEntry(Entry<String, String> entry, HashMap<String, JsonElement> storedElements,
+			Map<String, String> entryVSFinalValue, HashMap<Long, HashMap<Long, String>> stepNumberVSInNumberVSInJSON,
+			HashMap<Long, String> stepNumberVSOutJSON) {
+		String combinationResult = processMapCombinations(entry.getValue(), storedElements, stepNumberVSInNumberVSInJSON,
+				stepNumberVSOutJSON);
+		entryVSFinalValue.put( entry.getKey(), combinationResult);
+
+	}
+
+	
+
+	private String generateFinalUrl(String[] totalSplit, Map<String, String> entryVSFinalValue,
+			String defaultEndpoint) {
+		StringBuilder stringBuilder = new StringBuilder();
+		boolean isVar = false;
+		for (String string : totalSplit) {
+			if (isVar) {
+				for (var keyNewVal : entryVSFinalValue.entrySet()) {
+					if (keyNewVal.getKey().equals(string)) {
+						stringBuilder.append(keyNewVal.getValue());
+					}
+				}
+			} else {
+				stringBuilder.append(string);
+			}
+			if (string.isEmpty()) {
+				isVar = !isVar;
+			}
+		}
+		return stringBuilder.toString();
+	}
+	
+
+	public String[] generateEnpointParamSplit(String url) {
+		String[] split1 = url.split(ReservedNames.URL_BEGIN_PARAM);
+		ArrayList<String> enpointSplits = new ArrayList<>();
+		for (String beginSplit : split1) {
+			String[] totalSplit = beginSplit.split(ReservedNames.URL_END_PARAM);
+			enpointSplits.addAll(Arrays.asList(totalSplit));
+		}
+		return enpointSplits.toArray(String[]::new);
 	}
 }

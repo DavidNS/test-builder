@@ -46,12 +46,12 @@ public class StressExecution implements Runnable {
 	@Override
 	public void run() {
 		RestClient restClient = context.getBean(RestClient.class);
-		ReservedNamesParser jsParser = context.getBean(ReservedNamesParser.class);
+		ReservedNamesParser reservedNamesParser = context.getBean(ReservedNamesParser.class);
 		TestExecutorController testExecutorController = context.getBean(TestExecutorController.class);
 		String endpoint = mainRequestStepModel.getRequestStepModel().getUrl();
 		Method method = mainRequestStepModel.getRequestStepModel().getMethod();
 		String mainRequestBody = mainRequestStepModel.getRequestStepModel().getInJson();
-		String stringBody = jsParser
+		String stringBody = reservedNamesParser
 				.getInputJsonElement(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON, mainRequestBody).toString();
 		Headers headers = new Headers(mainRequestStepModel.getRequestStepModel().getAddHeaders(),
 				mainRequestStepModel.getRequestStepModel().getDeleteHeaders());
@@ -61,7 +61,7 @@ public class StressExecution implements Runnable {
 		Map<String, String> paramVSCombination = mainRequestStepModel.getRequestStepModel()
 				.getUrlParamKeyVSCombination();
 		Thread.currentThread().setName(threadName);
-		String updatedEndpoint = restClient.generateCombinedEndpoint(endpoint, paramVSCombination,
+		String updatedEndpoint = reservedNamesParser.generateCombinedEndpoint(endpoint, paramVSCombination,
 				stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON);
 		tryCall(restClient, updatedEndpoint, method, stringBody, headers, threadName);
 		testExecutorController.updateTestResults(testResultID, result, tt, pt, stepNumberVSInNumberVSInJSON,

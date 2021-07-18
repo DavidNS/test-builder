@@ -28,7 +28,7 @@ public class SendRequestStep {
 	JsonObjectParser jsonObjectParser;
 	
 	@Autowired
-	ReservedNamesParser jsonInParser;
+	ReservedNamesParser reservedNamesParser;
 
 	@Autowired
 	RestClient restClient;
@@ -42,7 +42,7 @@ public class SendRequestStep {
 		Method method = requestStepModel.getMethod();
 		Map<String, String> paramVsCombination = requestStepModel.getUrlParamKeyVSCombination();
 		Headers headers=new Headers(requestStepModel.getAddHeaders(),requestStepModel.getDeleteHeaders());
-		String requestBody = jsonInParser
+		String requestBody = reservedNamesParser
 				.getInputJsonElement(stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON, requestStepModel.getInJson())
 				.toString();
 		HashMap<Long, String> inHash = new HashMap<>();
@@ -50,7 +50,7 @@ public class SendRequestStep {
 		inHash.put(0L, requestBody);
 		stepNumberVSInNumberVSInJSON.put(stepNumber, inHash);
 		
-		String enpointUdpated = restClient.generateCombinedEndpoint(endpoint, paramVsCombination,
+		String enpointUdpated = reservedNamesParser.generateCombinedEndpoint(endpoint, paramVsCombination,
 				stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON);
 		
 		
