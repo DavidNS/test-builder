@@ -129,6 +129,7 @@ public class FormatEvaluation {
 			if(expected.startsWith(STRING_IDENTIFIER)) {
 				expected=expected.substring(1,expected.length()-1);
 			}
+			expected=reservedNamesParser.processMapCombinations(expected, new HashMap<>(), stepNumberVSInNumberVSInJSON, stepNumberVSOutJSON);
 			return expected.equals(result.getRequestInfo().getResponse());
 		}
 		
