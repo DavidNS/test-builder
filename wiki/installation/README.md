@@ -3,7 +3,7 @@
 1. [Google credentials](#google-credentials).
 2. [OKTA configuration](#okta-configuration)
 3. [Setup application](#setup-application)
-4. [Test with postman](#test-with-postman)
+4. [Setup postman](#setup-postman)
 
 # Google credentials
 
@@ -29,14 +29,14 @@
 <details>
   <summary>2. Create OAuth2 service. Allow postman as your client</summary>
   
-  ![OAuth Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/installation/images/OKTA_1.png)
-  ![OAuth Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/installation/images/OKTA_2.png)
-  ![OAuth Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/installation/images/OKTA_3.png)
+  ![OAuth OKTA](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/installation/images/OKTA_1.png)
+  ![OAuth OKTA](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/installation/images/OKTA_2.png)
+  ![OAuth OKTA](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/installation/images/OKTA_3.png)
 </details>
 <details>
   <summary>3. Link OKTA with google OAuth credentials. Use client-id and client-secret form Google-Credentials-Step-3</summary>
   
-  ![OAuth Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/installation/images/OKTA_4.png)
+  ![OAuth OKTA_GOOGLE](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/installation/images/OKTA_4.png)
 </details>
 
 
@@ -54,13 +54,39 @@ Default values:
 
 Require install [lombok](https://projectlombok.org/setup/eclipse). You can just run the lombok-(version).jar which shall be located on maven dependencies of the project to start the installer. Locate your eclipse and restart when installation finishes.
 
+## Run with maven
+
+Require install [maven](https://maven.apache.org)
+
+```bash
+    sudo apt udpate
+    sudo apt install maven
+```
+
+Package with maven but skiping the test and run the .jar
+
+```bash
+    mvn -Dmaven.test.skip package
+    java -jar target/rest-test-builder-0.0.1-SNAPSHOT.jar
+```
+
 ## Run with docker and docker-compose.
 
-Getting soon...
+Requires:
 
-# Test with postman
+1. Package the application with maven.
+2. [Docker](https://docs.docker.com/engine/install/) and [docker-compose](https://docs.docker.com/compose/install/)
+3. Edit the environment in /docker-compose.yml file
 
-Import the postman collection samples located in /postman.
+Build and start application with:
+
+```bash
+sudo docker-compose up
+```
+
+# Setup postman
+
+We will use [postman](https://www.postman.com/) aplication as our client. Import the postman collection samples located in /postman.
 
 ## Required postman variables
 
