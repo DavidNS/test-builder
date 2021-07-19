@@ -59,8 +59,8 @@ Require install [lombok](https://projectlombok.org/setup/eclipse). You can just 
 Package with maven but skiping the test and run the .jar
 
 ```bash
-    mvn -Dmaven.test.skip package
-    java -jar target/rest-test-builder-0.0.1-SNAPSHOT.jar
+mvn -Dmaven.test.skip package
+java -jar target/rest-test-builder-0.0.1-SNAPSHOT.jar
 ```
 
 ## Run with docker and docker-compose.
