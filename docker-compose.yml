@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  test-builder:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - OKTA_OAUTH_CLIENT_ID=REPLACE_YOUR_OKTA_OAUTH_CLIENT_ID
+      - OKTA_OAUTH_CLIENT_SECRET=REPLACE_YOUR_OKTA_OAUTH_CLIENT_SECRET
+      - OKTA_OAUTH_ISSUER=REPLACE_YOUR_OKTA_OAUTH_CLIENT_SECRET
