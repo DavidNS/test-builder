@@ -86,7 +86,7 @@ sudo docker-compose up
 
 # Setup postman
 
-We will use [postman](https://www.postman.com/) aplication as our client. Import the postman collection samples located in /postman.
+We will use [postman](https://www.postman.com/) application as our client. Import the postman collection samples located in /postman.
 
 ## Required postman variables
 
