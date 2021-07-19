@@ -56,13 +56,6 @@ Require install [lombok](https://projectlombok.org/setup/eclipse). You can just 
 
 ## Run with maven
 
-Require install [maven](https://maven.apache.org)
-
-```bash
-    sudo apt udpate
-    sudo apt install maven
-```
-
 Package with maven but skiping the test and run the .jar
 
 ```bash
