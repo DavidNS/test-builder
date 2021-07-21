@@ -2,6 +2,9 @@
 
 Currently the application allows us to create a user->workspace->project->test. Based mainly on the structure of the postman application. Each test contains a list of steps which will be executed following the step order.
 
+1. [Kind of steps](#kind-of-steps)
+1. [Reserved names](#reserved-names)
+
 # Kind of steps
 
 ## Edit field step
