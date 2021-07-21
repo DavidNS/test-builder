@@ -33,7 +33,7 @@ Expected step output:
     "user":{
     	"name": "Mario",
     	"id": "94663147T"
-    }
+    },
     "randomNumber" : "95844"
 }
 ```
