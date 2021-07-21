@@ -83,7 +83,7 @@ Structure:
 {
     "name": "RequestStep",
     "stepOrder": 2,
-    "stepKind": "MAP_FIELD",
+    "stepKind": "SEND_REQUEST",
     "stepModel": {
 	    "url": "http://localhost:8080/<<requestParam>>",
 	    "urlParamKeyVSCombination": {
@@ -124,8 +124,7 @@ Each test must have one and only one main request step. This is the request whic
             "addHeaders":{
                 "Authorization" : "Bearer MY_TOKEN"
             },
-            "method": "GET",
-            "inJson": "STEP_1.OUT"
+            "method": "GET"
         },
         "stressConditions": {
             "numberOfParallelRequest": 1,
