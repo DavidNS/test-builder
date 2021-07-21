@@ -90,7 +90,7 @@ Structure:
 	     	"SomeHeadderKey" : "SomeHeadderValue",
 	     	"SomeHeadderKey2" : "SomeHeadderValue2"
 	     },
-	     deleteHeaders":{
+	     "deleteHeaders":{
 	       "SomeHeadderKey"
 	     }
 	     "method": "POST",
