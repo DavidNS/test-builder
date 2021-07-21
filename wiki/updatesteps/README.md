@@ -92,7 +92,7 @@ Structure:
 	     },
 	     "deleteHeaders":{
 	       "SomeHeadderKey"
-	     }
+	     },
 	     "method": "POST",
 	     "inJson": "STEP_1.OUT"
     }
