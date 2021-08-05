@@ -21,6 +21,7 @@ import com.dns.resttestbuilder.configuration.Validation;
 import com.dns.resttestbuilder.exception.MainRequestException;
 import com.dns.resttestbuilder.exception.NotValidStepOrderException;
 import com.dns.resttestbuilder.steps.validation.AStepValidation;
+import com.dns.resttestbuilder.steps.validation.GenericValidator;
 import com.dns.resttestbuilder.steps.validation.step.EditFieldStepValidation;
 import com.dns.resttestbuilder.steps.validation.step.MainRequestStepValidaton;
 import com.dns.resttestbuilder.steps.validation.step.MapFieldValidation;
@@ -49,6 +50,9 @@ public class StepController {
 
 	@Autowired
 	UserController userController;
+	
+	@Autowired
+	GenericValidator genericValidator;
 
 	HashMap<StepKind, Class<?>> stepKindVSClassCast = new HashMap<>();
 
@@ -100,15 +104,24 @@ public class StepController {
 	}
 
 	public List<Step> handle(Principal principal, List<Step> steps) throws IllegalArgumentException, IllegalAccessException {
+		List<Step> stepsToReturn=new ArrayList<>();
 		String userID=principal.getName();
+		HashMap<Long, Integer> stepNumberVsInJson = new HashMap<>();
+		List<Step> mainRequestSteps = new ArrayList<>();
+		Step prev = null;
 		validation.handleCreatingObjectBeforeCreatingUser(userID);
+		validateSteps(steps);
+		validateStepsComposition(steps, stepsToReturn, userID, stepNumberVsInJson, mainRequestSteps, prev);
+		return stepsToReturn;
+
+	}
+
+	private void validateStepsComposition(List<Step> steps, List<Step> stepsToReturn, String userID,
+			HashMap<Long, Integer> stepNumberVsInJson, List<Step> mainRequestSteps, Step prev)
+			throws IllegalAccessException {
 		steps.sort((one, two) -> {
 			return one.getStepOrder().intValue() - two.getStepOrder().intValue();
 		});
-		List<Step> stepsToReturn=new ArrayList<>();
-		Step prev = null;
-		HashMap<Long, Integer> stepNumberVsInJson = new HashMap<>();
-		List<Step> mainRequestSteps = new ArrayList<>();
 		for (int i = 0; i < steps.size(); i++) {
 			Step step =newStep(userID,steps.get(i));
 			step.setUserID(userID);
@@ -123,8 +136,12 @@ public class StepController {
 		if (mainRequestSteps.size() > 1) {
 			throw new MainRequestException(mainRequestSteps.toArray(Step[]::new));
 		}
-		return stepsToReturn;
+	}
 
+	private void validateSteps(List<Step> steps) throws IllegalAccessException {
+		for (Step step : steps) {
+			genericValidator.validateObject(step);
+		}
 	}
 
 	private Step newStep(String userID, Step step) {

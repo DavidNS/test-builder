@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.GenericTypeResolver;
+import org.springframework.validation.Validator;
 
 import com.dns.resttestbuilder.configuration.ReservedNames;
 import com.dns.resttestbuilder.exception.NotValidInFormatException;
@@ -19,6 +20,8 @@ public abstract class AStepValidation<T> {
 	@Autowired
 	protected GenericValidator genericValidator;
 	
+	@Autowired
+	Validator validator;
 	
 	@Autowired
 	protected JsonObjectParser parser;

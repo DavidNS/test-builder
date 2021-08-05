@@ -40,8 +40,6 @@ public class Step {
 	@Enumerated(EnumType.STRING)
 	StepKind stepKind;
 	
-
-	
 	@NotNull(message = "Step model is mandatory")
 	@Convert(converter = JSONObjectConverter.class)
 	@Lob
