@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dns.resttestbuilder.configuration.Validation;
 import com.dns.resttestbuilder.exception.NotFoundException;
-import com.dns.resttestbuilder.validation.DefaultData;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
 	@Autowired
-	DefaultData defaultData;
+	Validation validation;
 
 	@Autowired
 	UserRepository repository;
@@ -46,8 +46,8 @@ public class UserController {
 	
 	public User handle(User dataToSave,Principal principal) {
 		dataToSave.setId(principal.getName());
-		defaultData.handleNullProperty(dataToSave::getWorkspaces, ArrayList::new, dataToSave::setWorkspaces);
-		defaultData.handleNullProperty(dataToSave::getUserPreferences, HashMap::new, dataToSave::setUserPreferences);
+		validation.handleNullProperty(dataToSave::getWorkspaces, ArrayList::new, dataToSave::setWorkspaces);
+		validation.handleNullProperty(dataToSave::getUserPreferences, HashMap::new, dataToSave::setUserPreferences);
 		return dataToSave;
 	}
 

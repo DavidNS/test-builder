@@ -10,16 +10,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dns.resttestbuilder.configuration.Validation;
 import com.dns.resttestbuilder.tests.Test;
 import com.dns.resttestbuilder.tests.TestController;
-import com.dns.resttestbuilder.validation.DefaultData;
 
 @RestController
 @RequestMapping
 public class TestResultController {
 
 	@Autowired
-	DefaultData defaultData;
+	Validation validation;
 
 	@Autowired
 	TestResultRepository repository;
@@ -37,9 +37,9 @@ public class TestResultController {
 	@GetMapping("/testresults/{testResultID}")
 	TestResult getOrTrow(Principal principal, @PathVariable Long testResultID) {
 		TestResult testResult = repository.findById(testResultID).map((tr) -> {
-			defaultData.handleNotValidUserID(TestResult.class, testResultID, tr.getUserID(), principal.getName());
+			validation.handleNotValidUserID(TestResult.class, testResultID, tr.getUserID(), principal.getName());
 			return tr;
-		}).orElseThrow(defaultData.getNotFoundSupplier(TestResult.class, testResultID));
+		}).orElseThrow(validation.getNotFoundSupplier(TestResult.class, testResultID));
 		return testResult;
 	}
 

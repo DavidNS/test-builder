@@ -1,4 +1,4 @@
-package com.dns.resttestbuilder.validation;
+package com.dns.resttestbuilder.configuration;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Consumer;
@@ -12,7 +12,7 @@ import com.dns.resttestbuilder.exception.UserIDNotFoundException;
 import com.google.gson.JsonElement;
 
 @Component
-public class DefaultData {
+public class Validation {
 
 	
 	@FunctionalInterface
@@ -42,7 +42,7 @@ public class DefaultData {
 	}
 
 	public Supplier<? extends NotFoundException> getNotFoundSupplier(Class<?> classType, Long id) {
-		return () -> new NotFoundException(classType, String.valueOf(id));
+		return getNotFoundSupplier(classType, String.valueOf(id));
 	}
 	
 	public Supplier<? extends NotFoundException> getNotFoundSupplier(Class<?> classType, String id) {

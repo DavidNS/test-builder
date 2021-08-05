@@ -14,17 +14,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dns.resttestbuilder.configuration.Validation;
 import com.dns.resttestbuilder.projects.Project;
 import com.dns.resttestbuilder.projects.ProjectController;
 import com.dns.resttestbuilder.users.UserController;
-import com.dns.resttestbuilder.validation.DefaultData;
 
 @RestController
 @RequestMapping
 public class TestController {
 	
 	@Autowired
-	DefaultData defaultData;
+	Validation validation;
 	
 	@Autowired
 	TestRepository repository;
@@ -45,16 +45,16 @@ public class TestController {
 	@GetMapping("/tests/{id}")
 	public Test getOrThrow(Principal principal,@PathVariable Long id)  {
 		return repository.findById(id).map((pj)->{
-			defaultData.handleNotValidUserID(Test.class, id, pj.getUserID(), principal.getName());
+			validation.handleNotValidUserID(Test.class, id, pj.getUserID(), principal.getName());
 			return pj;
-		}).orElseThrow(defaultData.getNotFoundSupplier(Test.class, id));
+		}).orElseThrow(validation.getNotFoundSupplier(Test.class, id));
 	}
 	
 	@PutMapping("/tests/{id}")
 	Test replace(Principal principal, @PathVariable Long id, @RequestBody Test test)  {
 		return repository.findById(id).map(pj -> {
 			return repository.save(handle(principal,pj,test));
-		}).orElseThrow(defaultData.getNotFoundSupplier(Test.class, id));
+		}).orElseThrow(validation.getNotFoundSupplier(Test.class, id));
 	}
 	
 	@PostMapping("/projects/{projectID}/tests")
@@ -76,14 +76,14 @@ public class TestController {
 	
 	public Test handle(Principal principal, Test dataToSave, Test newData)  {
 		String userID=principal.getName();
-		defaultData.handleCreatingObjectBeforeCreatingUser(userID);
-		defaultData.handleNotValidUserID(Test.class, dataToSave.getId(), dataToSave.getUserID(), userID);
+		validation.handleCreatingObjectBeforeCreatingUser(userID);
+		validation.handleNotValidUserID(Test.class, dataToSave.getId(), dataToSave.getUserID(), userID);
 		
 		dataToSave.setName(newData.getName());
 		dataToSave.setUserID(userID);
 		
-		defaultData.handleNullProperty(dataToSave::getSteps, ArrayList::new, dataToSave::setSteps);
-		defaultData.handleNullProperty(dataToSave::getTestResults, ArrayList::new, dataToSave::setTestResults);
+		validation.handleNullProperty(dataToSave::getSteps, ArrayList::new, dataToSave::setSteps);
+		validation.handleNullProperty(dataToSave::getTestResults, ArrayList::new, dataToSave::setTestResults);
 		return dataToSave;
 	}
 

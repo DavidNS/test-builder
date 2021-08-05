@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dns.resttestbuilder.configuration.Validation;
 import com.dns.resttestbuilder.exception.MainRequestException;
 import com.dns.resttestbuilder.exception.NotValidStepOrderException;
 import com.dns.resttestbuilder.steps.validation.AStepValidation;
@@ -28,7 +29,6 @@ import com.dns.resttestbuilder.testexecutions.JsonObjectParser;
 import com.dns.resttestbuilder.tests.Test;
 import com.dns.resttestbuilder.tests.TestController;
 import com.dns.resttestbuilder.users.UserController;
-import com.dns.resttestbuilder.validation.DefaultData;
 
 @Validated
 @RestController
@@ -36,7 +36,7 @@ import com.dns.resttestbuilder.validation.DefaultData;
 public class StepController {
 
 	@Autowired
-	DefaultData defaultData;
+	Validation validation;
 
 	@Autowired
 	JsonObjectParser jsonObjectParser;
@@ -73,9 +73,9 @@ public class StepController {
 	@GetMapping("/steps/{id}")
 	Step getOrThrow(Principal principal, @PathVariable Long id) {
 		return repository.findById(id).map((s) -> {
-			defaultData.handleNotValidUserID(Step.class, id, s.getUserID(), principal.getName());
+			validation.handleNotValidUserID(Step.class, id, s.getUserID(), principal.getName());
 			return s;
-		}).orElseThrow(defaultData.getNotFoundSupplier(Step.class, id));
+		}).orElseThrow(validation.getNotFoundSupplier(Step.class, id));
 	}
 
 	@PostMapping("/tests/{testID}/steps")
@@ -101,7 +101,7 @@ public class StepController {
 
 	public List<Step> handle(Principal principal, List<Step> steps) throws IllegalArgumentException, IllegalAccessException {
 		String userID=principal.getName();
-		defaultData.handleCreatingObjectBeforeCreatingUser(userID);
+		validation.handleCreatingObjectBeforeCreatingUser(userID);
 		steps.sort((one, two) -> {
 			return one.getStepOrder().intValue() - two.getStepOrder().intValue();
 		});

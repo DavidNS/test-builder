@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dns.resttestbuilder.configuration.Validation;
 import com.dns.resttestbuilder.exception.NotFoundException;
 import com.dns.resttestbuilder.users.User;
 import com.dns.resttestbuilder.users.UserController;
-import com.dns.resttestbuilder.validation.DefaultData;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 public class WorkspaceController {
 
 	@Autowired
-	DefaultData defaultData;
+	Validation validation;
 
 	@Autowired
 	WorkspaceRepository repository;
@@ -57,16 +57,16 @@ public class WorkspaceController {
 	@GetMapping("/{id}")
 	public Workspace getOrThrow(Principal principal, @PathVariable Long id) {
 		return repository.findById(id).map((ws) -> {
-			defaultData.handleNotValidUserID(Workspace.class, id, ws.getUserID(), principal.getName());
+			validation.handleNotValidUserID(Workspace.class, id, ws.getUserID(), principal.getName());
 			return ws;
-		}).orElseThrow(defaultData.getNotFoundSupplier(Workspace.class, id));
+		}).orElseThrow(validation.getNotFoundSupplier(Workspace.class, id));
 	}
 
 	@PutMapping("/{id}")
 	Workspace replace(Principal principal, @PathVariable Long id, @RequestBody Workspace workspace)  {
 		return repository.findById(id).map(ws -> {
 			return repository.save(handle(principal, ws, workspace));
-		}).orElseThrow(defaultData.getNotFoundSupplier(Workspace.class, id));
+		}).orElseThrow(validation.getNotFoundSupplier(Workspace.class, id));
 	}
 
 	@DeleteMapping("/{id}")
@@ -82,13 +82,13 @@ public class WorkspaceController {
 
 	public Workspace handle(Principal principal, Workspace dataToSave, Workspace newData) {
 		String userID=principal.getName();
-		defaultData.handleCreatingObjectBeforeCreatingUser(userID);
-		defaultData.handleNotValidUserID(Workspace.class, dataToSave.getId(), dataToSave.getUserID(), userID);
+		validation.handleCreatingObjectBeforeCreatingUser(userID);
+		validation.handleNotValidUserID(Workspace.class, dataToSave.getId(), dataToSave.getUserID(), userID);
 
 		dataToSave.setName(newData.getName());
 		dataToSave.setUserID(userID);
 
-		defaultData.handleNullProperty(dataToSave::getProjects, ArrayList::new, dataToSave::setProjects);
+		validation.handleNullProperty(dataToSave::getProjects, ArrayList::new, dataToSave::setProjects);
 
 		return dataToSave;
 	}

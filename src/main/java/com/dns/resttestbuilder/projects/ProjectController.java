@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dns.resttestbuilder.configuration.Validation;
 import com.dns.resttestbuilder.users.UserController;
-import com.dns.resttestbuilder.validation.DefaultData;
 import com.dns.resttestbuilder.workspaces.Workspace;
 import com.dns.resttestbuilder.workspaces.WorkspaceController;
 
@@ -24,7 +24,7 @@ import com.dns.resttestbuilder.workspaces.WorkspaceController;
 public class ProjectController {
 
 	@Autowired
-	DefaultData defaultData;
+	Validation validation;
 	
 	@Autowired
 	ProjectRepository repository;
@@ -48,16 +48,16 @@ public class ProjectController {
 	@GetMapping("/projects/{id}")
 	public Project getOrThrow(Principal principal,@PathVariable Long id)  {
 		return repository.findById(id).map((pj)->{
-			defaultData.handleNotValidUserID(Project.class, id, pj.getUserID(), principal.getName());
+			validation.handleNotValidUserID(Project.class, id, pj.getUserID(), principal.getName());
 			return pj;
-		}).orElseThrow(defaultData.getNotFoundSupplier(Project.class, id));
+		}).orElseThrow(validation.getNotFoundSupplier(Project.class, id));
 	}
 	
 	@PutMapping("/projects/{id}")
 	Project replace(Principal principal, @PathVariable Long id, @RequestBody Project project) {
 		return repository.findById(id).map(pj -> {
 			return repository.save(handle(principal,pj,project));
-		}).orElseThrow(defaultData.getNotFoundSupplier(Project.class, id));
+		}).orElseThrow(validation.getNotFoundSupplier(Project.class, id));
 	}
 	
 	@PostMapping("/workspaces/{workspaceID}/projects")
@@ -79,13 +79,13 @@ public class ProjectController {
 	
 	public Project handle(Principal principal, Project dataToSave, Project newData) {
 		String userID=principal.getName();
-		defaultData.handleCreatingObjectBeforeCreatingUser(userID);
-		defaultData.handleNotValidUserID(Project.class, dataToSave.getId(), dataToSave.getUserID(), userID);
+		validation.handleCreatingObjectBeforeCreatingUser(userID);
+		validation.handleNotValidUserID(Project.class, dataToSave.getId(), dataToSave.getUserID(), userID);
 		
 		dataToSave.setName(newData.getName());
 		dataToSave.setUserID(userID);
 		
-		defaultData.handleNullProperty(dataToSave::getTests, ArrayList::new, dataToSave::setTests);
+		validation.handleNullProperty(dataToSave::getTests, ArrayList::new, dataToSave::setTests);
 		
 		return dataToSave;
 	}
