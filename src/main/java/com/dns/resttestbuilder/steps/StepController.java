@@ -104,21 +104,19 @@ public class StepController {
 	}
 
 	public List<Step> handle(Principal principal, List<Step> steps) throws IllegalArgumentException, IllegalAccessException {
-		List<Step> stepsToReturn=new ArrayList<>();
 		String userID=principal.getName();
-		HashMap<Long, Integer> stepNumberVsInJson = new HashMap<>();
-		List<Step> mainRequestSteps = new ArrayList<>();
-		Step prev = null;
 		validation.handleCreatingObjectBeforeCreatingUser(userID);
 		validateSteps(steps);
-		validateStepsComposition(steps, stepsToReturn, userID, stepNumberVsInJson, mainRequestSteps, prev);
-		return stepsToReturn;
+		return validateStepsComposition(steps, userID);
 
 	}
 
-	private void validateStepsComposition(List<Step> steps, List<Step> stepsToReturn, String userID,
-			HashMap<Long, Integer> stepNumberVsInJson, List<Step> mainRequestSteps, Step prev)
+	private List<Step> validateStepsComposition(List<Step> steps,  String userID)
 			throws IllegalAccessException {
+		List<Step> stepsToReturn=new ArrayList<>();
+		HashMap<Long, Integer> stepNumberVsInJson = new HashMap<>();
+		List<Step> mainRequestSteps = new ArrayList<>();
+		Step prev = null;
 		steps.sort((one, two) -> {
 			return one.getStepOrder().intValue() - two.getStepOrder().intValue();
 		});
@@ -136,6 +134,7 @@ public class StepController {
 		if (mainRequestSteps.size() > 1) {
 			throw new MainRequestException(mainRequestSteps.toArray(Step[]::new));
 		}
+		return stepsToReturn;
 	}
 
 	private void validateSteps(List<Step> steps) throws IllegalAccessException {
