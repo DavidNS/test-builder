@@ -147,7 +147,7 @@ Each test must have one and only one main request step. This is the request whic
 
 # Reserved names
 
-The application allows us to use reserved names to indicate a reference to the already provided inputs or the outputs of already processed steps.
+The application allows us to use reserved names to indicate a reference to the already provided inputs/outputs of already processed steps.
 
 The expressions to refer this are:
 
