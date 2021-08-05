@@ -1,6 +1,5 @@
 package com.dns.resttestbuilder.configuration;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -9,17 +8,9 @@ import org.springframework.stereotype.Component;
 import com.dns.resttestbuilder.exception.InvalidUserIDException;
 import com.dns.resttestbuilder.exception.NotFoundException;
 import com.dns.resttestbuilder.exception.UserIDNotFoundException;
-import com.google.gson.JsonElement;
 
 @Component
 public class Validation {
-
-	
-	@FunctionalInterface
-	public interface UdpateElementConsumer {
-		void consume(String methodName, JsonElement children, String idElement)
-				throws NoSuchMethodException, IllegalAccessException, InvocationTargetException;
-	}
 
 	public void handleCreatingObjectBeforeCreatingUser(String userID) {
 		if (userID == null) {

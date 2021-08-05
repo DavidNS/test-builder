@@ -32,10 +32,4 @@ public class Project {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	List<Test> tests;
 	
-//	
-//	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//	List<Step> steps;
-//	
-//	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//	List<JSONModel> jsonModels;
 }
