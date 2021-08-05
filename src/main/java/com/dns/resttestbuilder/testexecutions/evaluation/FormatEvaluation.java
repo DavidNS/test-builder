@@ -6,12 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.dns.resttestbuilder.results.Result;
-import com.dns.resttestbuilder.results.ResultController;
 import com.dns.resttestbuilder.steps.embeddedstep.mainRequest.ExpectedPerformaceResults;
 import com.dns.resttestbuilder.steps.embeddedstep.mainRequest.ResponseSuccessKind;
 import com.dns.resttestbuilder.testexecutions.JsonObjectParser;
 import com.dns.resttestbuilder.testexecutions.ReservedNamesParser;
-import com.dns.resttestbuilder.testexecutions.TestExecutorController;
 import com.dns.resttestbuilder.testresults.TestResult;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -29,12 +27,6 @@ public class FormatEvaluation {
 
 	@Autowired
 	ReservedNamesParser reservedNamesParser;
-
-	@Autowired
-	ResultController resultController;
-
-	@Autowired
-	TestExecutorController testExecutorController;
 
 	private HashMap<ResponseSuccessKind, CheckFormat> kindVsCheckFormat = new HashMap<>();
 

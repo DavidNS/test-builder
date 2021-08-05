@@ -4,27 +4,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.dns.resttestbuilder.results.Result;
-import com.dns.resttestbuilder.results.ResultController;
 import com.dns.resttestbuilder.results.embeddedresult.Dates;
 import com.dns.resttestbuilder.results.embeddedresult.Differences;
 import com.dns.resttestbuilder.steps.embeddedstep.mainRequest.ExpectedPerformaceResults;
 import com.dns.resttestbuilder.steps.embeddedstep.mainRequest.TimeSuccessKind;
-import com.dns.resttestbuilder.testexecutions.TestExecutorController;
 import com.dns.resttestbuilder.testexecutions.execution.steps.Times;
 import com.dns.resttestbuilder.testresults.TestResult;
 
 @Component
 public class TimeEvaluation {
-
-	@Autowired
-	ResultController resultController;
-
-	@Autowired
-	TestExecutorController testExecutorController;
 
 	public ArrayList<Result> evaluateTimes(TestResult testResult, Result result, Times tt, Times pt) {
 		setTimes(result, pt);
@@ -38,29 +29,30 @@ public class TimeEvaluation {
 		List<TimeSuccessKind> timeSuccessKinds = exRS.getTimeSuccessKind();
 		Dates dates = result.getDates();
 
-		boolean needTestEvaluated = needEval(timeSuccessKinds, TimeSuccessKind.TOTAL_TIME);
-		boolean needParallEvaluated = needEval(timeSuccessKinds, TimeSuccessKind.PARALLEL_TIME);
-		boolean needSingleEvaluated = needEval(timeSuccessKinds, TimeSuccessKind.SINGLE_TIME);
+		boolean needTotalEvaluation = needEval(timeSuccessKinds, TimeSuccessKind.TOTAL_TIME);
+		boolean needParallEvaluation = needEval(timeSuccessKinds, TimeSuccessKind.PARALLEL_TIME);
+		boolean needSingleEvaluation = needEval(timeSuccessKinds, TimeSuccessKind.SINGLE_TIME);
 
 		Long expectedSingleTime = exRS.getExpectedSingleTime();
 		Long expectedParallelTime = exRS.getExpectedPararellTime();
 		Long expectedTotalTime = exRS.getExpectedTotalTime();
 
-		boolean totalPassed = !needTestEvaluated || timePassed(expectedTotalTime, tt);
-		boolean parallPassed = !needParallEvaluated || timePassed(expectedParallelTime, pt);
+		boolean totalPassed = !needTotalEvaluation || timePassed(expectedTotalTime, tt);
+		boolean parallPassed = !needParallEvaluation || timePassed(expectedParallelTime, pt);
 
 		long singleDiff = timeDif(dates.getRequestDate(), dates.getResponseDate());
-		boolean singlePassed = !needSingleEvaluated || testTimePassed(singleDiff, expectedSingleTime);
+		boolean singlePassed = !needSingleEvaluation || testTimePassed(singleDiff, expectedSingleTime);
 
 		boolean passed = totalPassed && parallPassed && singlePassed;
 
-		if (evaluated(tt, needTestEvaluated) && evaluated(pt, needParallEvaluated)) {
+		
+		result.getDifferences().setRequestResponseDiff(singleDiff);
+		if (evaluated(tt, needTotalEvaluation) && evaluated(pt, needParallEvaluation)) {
 			updateTimesPassed(testResult, passed);
 			result.getEvaluation().setTimePassed(passed);
 			updatedtTimes.add(result);
 		}
-		result.getDifferences().setRequestResponseDiff(singleDiff);
-		evaluateDiffereces(needTestEvaluated, passed, pt, this::parallDiffSetter, testResult, result, updatedtTimes);
+		evaluateDiffereces(needTotalEvaluation, passed, pt, this::parallDiffSetter, testResult, result, updatedtTimes);
 		evaluateDiffereces(false, passed, tt, this::totallDiffSetter, testResult, result, updatedtTimes);
 		return updatedtTimes;
 	}

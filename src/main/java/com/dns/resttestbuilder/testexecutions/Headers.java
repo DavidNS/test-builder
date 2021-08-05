@@ -1,4 +1,4 @@
-package com.dns.resttestbuilder.testexecutions.execution;
+package com.dns.resttestbuilder.testexecutions;
 
 import java.util.List;
 import java.util.Map;
