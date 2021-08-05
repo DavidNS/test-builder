@@ -9,7 +9,7 @@ Currently the application allows us to create a user->workspace->project->test. 
 
 ## Edit field step
 
-This step get an input json and transform the value of one of their keys through one of the functions written in the `EditScripts.class`. To check the name of the allowed methods and their parameters the applications provides a GET /editscripts endpoint. (TODO: This endpoint have currently a bug and also show inherit methods)
+This step get an input json and transform the value of one of their keys through one of the functions written in the `EditScripts.class`. To check the name of the allowed methods and their parameters the applications provides a GET /editscripts endpoint.
 
 
 Structure:
@@ -23,7 +23,7 @@ Structure:
         "inJson": "{\"user\":{ \"name\":\"Mario\", \"id\":\"\"  },\"randomNumber\":\"\"}",
         "plainKeyVsMehtod": {
             "user.id": "getNewDNINumber",
-            "requestID": "generateRandomIntIntRange 1 100000"
+            "requestID": "generateRandomLastInteger.1.100000"
         }
     }
 }

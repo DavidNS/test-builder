@@ -1,8 +1,5 @@
 package com.dns.resttestbuilder.steps.validation.step;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,10 +50,8 @@ public class EditFieldStepValidation extends AStepValidation<EditFieldStepModel>
 		}
 	}
 
-	//TODO : -> Remove inherit methods
 	public void handleValidMethds(Collection<String> values, Step step) {
-		Method[] methods = EditScripts.class.getMethods();
-		HashMap<String, Integer> publicStringMethodNames = removeNotValidMethods(methods);
+		HashMap<String, Integer> publicStringMethodNames = EditScripts.getValidMethods();
 		for (String methodComb : values) {
 			String[] ids = methodComb.split(ReservedNames.IDENTIFIER_SEPARATOR);
 			int paramComb = ids.length - 1;
@@ -73,28 +68,6 @@ public class EditFieldStepValidation extends AStepValidation<EditFieldStepModel>
 			}
 
 		}
-	}
-
-	private boolean isValidSignaure(Method method) {
-		boolean valid = method.getReturnType().equals(String.class) && Modifier.isPublic(method.getModifiers());
-		Parameter[] params = method.getParameters();
-		for (int i = 0; i < params.length && valid; i++) {
-			Parameter p = params[i];
-			if (!p.getType().equals(String.class)) {
-				valid = false;
-			}
-		}
-		return valid;
-	}
-
-	private HashMap<String, Integer> removeNotValidMethods(Method[] methods) {
-		HashMap<String, Integer> result = new HashMap<>();
-		for (Method method : methods) {
-			if (isValidSignaure(method)) {
-				result.put(method.getName(), method.getParameterCount() - 1);
-			}
-		}
-		return result;
 	}
 
 }

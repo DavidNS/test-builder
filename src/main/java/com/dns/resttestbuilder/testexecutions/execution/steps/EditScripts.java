@@ -1,5 +1,11 @@
 package com.dns.resttestbuilder.testexecutions.execution.steps;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,6 +27,31 @@ public class EditScripts {
 	private final static Pattern PATTERN_GET_LAST_NUMBER_IN_SEQUENCE = Pattern
 			.compile(REGEXP_GET_LAST_NUMBER_IN_SEQUENCE);
 	
+	public static HashMap<String, Integer> getValidMethods(){
+		HashMap<String, Integer> result = new HashMap<>();
+		HashSet<Method> objectMethods=new HashSet<>(Arrays.asList(Object.class.getMethods()));
+		for (Method method : EditScripts.class.getMethods()) {
+			if (!objectMethods.contains(method) && isValidSignaure(method)) {
+				result.put(method.getName(), method.getParameterCount() - 1);
+			}
+		}
+		return result;
+		
+		
+	}
+	
+	private static boolean isValidSignaure(Method method) {
+		boolean valid = method.getReturnType().equals(String.class) && Modifier.isPublic(method.getModifiers());
+		Parameter[] params = method.getParameters();
+		for (int i = 0; i < params.length && valid; i++) {
+			Parameter p = params[i];
+			if (!p.getType().equals(String.class)) {
+				valid = false;
+			}
+		}
+		return valid;
+	}
+	
 	public String getNewDNINumber(String valueModel) {
 		String newDNINumber = String.valueOf(generateRandomIntIntRange(0, MAX_DNI_NUMBER));
 		return newDNINumber + calculateDNILetter(newDNINumber);
@@ -31,7 +62,7 @@ public class EditScripts {
 		return RANDOM.nextInt((max - min) + 1) + min;
 	}
 	
-	public String newRandomLastNumberInSequence(String controlSequence, String minRange, String maxRange) {
+	public String generateRandomLastInteger(String controlSequence, String minRange, String maxRange) {
 		Matcher matcher = PATTERN_GET_LAST_NUMBER_IN_SEQUENCE.matcher(controlSequence);
 		if (matcher.find()) {
 			int startRange = matcher.start();

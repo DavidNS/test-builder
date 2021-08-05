@@ -1,8 +1,9 @@
 package com.dns.resttestbuilder.editscriptmethods;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,15 +19,12 @@ import lombok.NoArgsConstructor;
 @RequestMapping(path="/editmethods")
 public class EditScriptMethodController {
 
-	//TODO: Remove inherit methods
 	@GetMapping
 	List<EditScript> getAll() {
-		Method[] methods = EditScripts.class.getMethods();
+		HashMap<String, Integer> methodVSParam = EditScripts.getValidMethods();
 		List<EditScript> methodsResult= new ArrayList<>();
-		for (Method method : methods) {
-			String methodName= method.getName();
-			int paramsNumber= method.getParameterCount() - 1;
-			methodsResult.add(new EditScript(methodName, paramsNumber));
+		for (Entry<String, Integer> entry : methodVSParam.entrySet()) {
+			methodsResult.add(new EditScript(entry.getKey(), entry.getValue()));
 			
 		}
 		return methodsResult;
