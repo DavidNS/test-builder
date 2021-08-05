@@ -13,11 +13,13 @@
 	<artifactId>rest-test-builder</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>rest-test-builder</name>
-	<description>Project for test an api</description>
+	<description>API wich allows execute parallel REST request and gives stress test results.</description>
 
 	<properties>
 		<java.version>11</java.version>
 		<okhttp.version>2.7.5</okhttp.version>
+		<okta.version>2.1.0</okta.version>
+		<openapi-ui.version>1.5.10</openapi-ui.version>
 	</properties>
 
 	<dependencies>
@@ -34,7 +36,7 @@
 		<dependency>
 			<groupId>com.okta.spring</groupId>
 			<artifactId>okta-spring-boot-starter</artifactId>
-			<version>2.1.0</version>
+			<version>${okta.version}</version>
 		</dependency>
 
 		<!-- Should auto detects externalized configuration and creates metadata 
@@ -91,6 +93,12 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 		<!-- DEV PURPOSES ################################## -->
+		<!-- Open Api (Swagger docs) -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>${openapi-ui.version}</version>
+		</dependency>
 		<!-- Test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

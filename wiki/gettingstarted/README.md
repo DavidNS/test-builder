@@ -3,6 +3,7 @@
 1. [Postman collection](#postman-collection)
 2. [Get access token](#get-access-token)
 3. [Create and execute test](#create-and-execute-test)
+4. [Swagger definition](#swagger-definition)
 
 # Postman collection
   
@@ -60,3 +61,9 @@ To be able to send a request first is needed to request a token.
   ![Token Google](https://raw.githubusercontent.com/DavidNS/test-builder/master/wiki/gettingstarted/images/POSTMAN_7.png)
   
 </details>
+
+# Swagger definition
+
+The swagger definition is located by default in:
+
+- http://localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config
